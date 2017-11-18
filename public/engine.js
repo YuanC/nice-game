@@ -20,6 +20,11 @@ function createScene () { // Initialize scene
   return scene;
 }
 
+function updateScene (newMap) {
+
+  // socket.emit('plantSeed', data)
+}
+
 function startBabylon () {
   if (BABYLON.Engine.isSupported()) {
 
@@ -35,7 +40,9 @@ function startBabylon () {
 
       engine.runRenderLoop(function () {
         scene.render();
+
         // TODO: Request update from server
+        // socket update => callback update
       });
     });
 

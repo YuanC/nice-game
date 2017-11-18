@@ -1,17 +1,21 @@
+const request = require('request')
+
 let exp = module.exports = { }
 
 const api_url = 'https://hackathon.pic.pelmorex.com/api/data/ssp'
 
-exp.updateMap = () => {
+exp.updateWeather = (places) => {
   console.log('updating map')
-  // updates weather
-  // updates crops
+
+  // fetches weather for each location in places
+  // for (let key in )
+
+  // updates plants
 }
 
 exp.generateMap = () => {
   console.log('Generating Map')
-  // updates weather
-  // updates crops
+  // return tile matrix
 }
 
 // Game Data Representation
