@@ -2,198 +2,11 @@
 var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 5;
+var treeSize = 1;
 
-function generateMapTiles(tiledGround, mapTemplate, subdivisions) {
-  // Needed variables to set subMeshes
-  var verticesCount = tiledGround.getTotalVertices();
-  var tileIndicesLength = tiledGround.getIndices().length / (subdivisions.w * subdivisions.h);
-  
-  // Set subMeshes of the tiled ground
-  tiledGround.subMeshes = [];
-  var base = 0;
-  for (var row = 0; row < subdivisions.h; row++) {
-    for (var col = 0; col < subdivisions.w; col++) {
-      if(mapTemplate[row][col] === null) {
-        tiledGround.subMeshes.push(new BABYLON.SubMesh(0, 0, verticesCount, base , tileIndicesLength, tiledGround));                
-        base += tileIndicesLength;
-      }
-      else if(mapTemplate[row][col].type === 'ground') {
-        tiledGround.subMeshes.push(new BABYLON.SubMesh(1, 0, verticesCount, base , tileIndicesLength, tiledGround));
-        base += tileIndicesLength;                
-      }
-      else if(mapTemplate[row][col].type === 'water') {
-        tiledGround.subMeshes.push(new BABYLON.SubMesh(2, 0, verticesCount, base , tileIndicesLength, tiledGround));                                
-        base += tileIndicesLength;                
-      }
-      else { // Tile type does not exist
-        console.log("Map tile type invalid");
-        tiledGround.subMeshes.push(new BABYLON.SubMesh(3, 0, verticesCount, base , tileIndicesLength, tiledGround));                                
-        base += tileIndicesLength;
-      }
-    }
-  }
-}
-
-// Helper functions to get world coords from game grid coords
-// Start at first tile (0,0), get midpoint of side lengths 
-// Have to account for odd/even
-function getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth) {
-  var objCoordX = 0;
-  if(widthIsOdd === true) {
-    // Map to 0
-    objCoordX -= tileWidth * Math.floor(numTilesWidth / 2);
-    objCoordX += gameGridX * tileWidth;
-  }
-  else {
-    objCoordX -= tileWidth / 2 + (tileWidth * Math.floor(numTilesWidth / 2));
-    objCoordX += (gameGridX + 1) * tileWidth;                
-  }
-  return objCoordX;
-}
-
-function getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight) {
-  var objCoordZ = 0;
-  if(heightIsOdd === true) {
-    objCoordZ -= (tileHeight * Math.floor(numTilesHeight / 2));
-    objCoordZ += gameGridZ * tileHeight;
-  }
-  else {
-    objCoordZ -= tileHeight / 2 + (tileHeight * Math.floor(numTilesHeight / 2));
-    objCoordZ += (gameGridZ + 1) * tileHeight;
-  }
-  return objCoordZ;
-}
-
-function refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, numTilesWidth, heightIsOdd, tileHeight, numTilesHeight, scene) {
-  console.log("--- Refreshing map objects...");
-  for (var row = 0; row < subdivisions.h; row++) {
-    for (var col = 0; col < subdivisions.w; col++) {
-      if(mapTemplate[row][col] !== null) {
-        var currentType = mapTemplate[row][col].type;
-        console.log("Current type: " + currentType);
-        if(currentType === 'ground') {
-          var currentPlant =  mapTemplate[row][col].plant;
-          if(currentPlant !== null) {
-            // Show existing plant
-            console.log("Map already has this plant: " + currentPlant.type);
-            // Temporary placeholder tree thing
-            var blueBox = BABYLON.Mesh.CreateBox("blueBox", 1, scene);
-            var blueMat = new BABYLON.StandardMaterial("ground", scene);
-            blueMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-            blueMat.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-            blueMat.emissiveColor = BABYLON.Color3.Blue();
-            blueBox.material = blueMat;
-            var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
-            var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
-            console.log("Current object game coord: (" + objCoordX + ", " + objCoordZ + ")");                            
-            blueBox.position.x = objCoordX;
-            blueBox.position.z = objCoordZ;
-          }
-          else {
-            // No plant object here
-          }
-        }            
-      }
-    }
-  }
-}
-
-// Map to array indices
-function getGameGridX(x, widthIsOdd, tileWidth, subdivisions) {
-  var gameGridX = 0;
-  if(widthIsOdd === true) {
-    if(x >= 0) { // x is positive
-      while(x >= 0) {
-        x -= tileWidth;
-        // Based on the condition map is generated starting from 0,0 
-        if(x >= (0 - (tileWidth / 2))) {
-          gameGridX++;
-        }
-      }
-    }
-    else { // x is negative
-      while(x < 0) {
-        x += tileWidth;
-        if(x < (0 + (tileWidth / 2))) {
-          gameGridX--;
-        }
-      }
-    }
-  }
-  else { // width is even
-    if(x >= 0) { // x is positive
-    gameGridX++;
-      while(x >= 0) {
-        x -= tileWidth;
-        if(x >= 0) {
-          gameGridX++;
-        }
-      }
-    }
-    else { // x is negative
-      while(x < 0) {
-        x += tileWidth;
-        if(x < 0) {
-          gameGridX--;
-        }
-      }
-    }
-  }
-  if(widthIsOdd === true) {
-    gameGridX += Math.floor(subdivisions.w / 2);
-  }
-  else {
-    gameGridX += Math.floor(subdivisions.w / 2) - 1;
-  }
-  return Math.abs(gameGridX);
-}
-function getGameGridZ(z, heightIsOdd, tileHeight, subdivisions) {
-  var gameGridZ = 0;
-  if(heightIsOdd === true) {
-    if(z >= 0) { // z is positive
-      while(z >= 0) {
-        z -= tileHeight;
-        if(z >= (0 - (tileHeight / 2))) {
-          gameGridZ++;
-        }
-      }
-    }
-    else { // z is negative
-      while(z < 0) {
-        z += tileHeight;
-        if(z < (0 + (tileHeight / 2))) {                        
-          gameGridZ--;
-        }
-      }
-    }
-  }
-  else {
-    if(z >= 0) { // z is positive
-      gameGridZ++;
-      while(z >= 0) {
-        z -= tileHeight;
-        if(z >= 0) {
-          gameGridZ++;
-        }
-      }
-    }
-    else { // z is negative
-      while(z < 0) {
-        z += tileHeight;
-        if(z < 0) {                        
-          gameGridZ--;
-        }
-      }
-    }
-  }
-  if(heightIsOdd === true) {
-    gameGridZ += Math.floor(subdivisions.h / 2);
-  }
-  else {
-    gameGridZ += Math.floor(subdivisions.h / 2) - 1;
-  }
-  return Math.abs(gameGridZ);
-}
+/*
+Please refer to engine_helpers.js for necessary function calls
+*/
 
 var createScene = function () {
 
@@ -232,15 +45,6 @@ var createScene = function () {
 
   // Get map from server
   var mapTemplate = data.map;
-
-  // Map for debugging
-  // var mapTemplate = [
-  //     [null, null, null, null, null],
-  //     [{'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}],
-  //     [{'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 3, 'stage': 1}}, {'type': 'ground', 'plant': null}, {'type': 'ground', 'plant': null}, {'type': 'water'}],
-  //     [{'type': 'water'}, {'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 2, 'stage': 0}}, {'type': 'water'}, {'type': 'water'}],
-  //     [null, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, null]
-  // ]
 
   // Determine map template number of tiles lengthwise and widthwise
   var numTilesWidth = 0;
@@ -306,8 +110,7 @@ var createScene = function () {
       heightIsOdd = false;
   }
 
-  // Need to determine coords first
-  // All params necessary
+  // Need to determine coords first, all params necessary
   refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, numTilesWidth, heightIsOdd, tileHeight, numTilesHeight, scene);
   
   //When pointer down event is raised
@@ -336,17 +139,9 @@ var createScene = function () {
             // Can make new plant
             // Need to update server array
             console.log("No plant here, can plant something");                        
-            var greenBox = BABYLON.Mesh.CreateBox("greenBox", 1, scene);
-            var greenMat = new BABYLON.StandardMaterial("ground", scene);
-            greenMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-            greenMat.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-            greenMat.emissiveColor = BABYLON.Color3.Green();
-            greenBox.material = greenMat;
             var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
             var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);
-            console.log("New object game coord: (" + objCoordX + ", " + objCoordZ + ")");                            
-            greenBox.position.z = objCoordZ;
-            greenBox.position.x = objCoordX;
+            createTree(objCoordX, objCoordZ, treeSize, scene);
           }
         }            
       }
