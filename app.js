@@ -34,16 +34,21 @@ io.on('connection', (socket) => {
 
     if (places.hasOwnProperty(location)) {
       socket.location = location
+      places[socket.location]['playerCount'] += 1
+      socket.emit('connectSuccess', places[location])
+      // socket.
     } else {
-      // socket.emit()
+      socket.emit('connectFail')
     }
   })
 
-  socket.on('plantSeed', (data) => {
-    // socket.emit()
+  socket.on('disconnect', () => {
+    console.log('Client Disconnected')
+    if (places.hasOwnProperty(socket.location)) {
+      places[socket.location]['playerCount'] -= 1
+    }
   })
 
-  socket.on('disconnect', () => console.log('Client Disconnected'))
 })
 
 

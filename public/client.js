@@ -1,12 +1,13 @@
 var socket = io.connect();
-var placeName = window.location.pathname.toLowerCase();
+var placeName = window.location.pathname.toLowerCase().substring(1);
 
-socket.on('connectSuccess', function () {
-  // get location name through 'window.location.pathname.toLowerCase()'
+socket.on('connectSuccess', function (data) {
+  console.log(data);
   startBabylon();
 })
 
 socket.on('connectFail', function () {
+  socket.disconnect(true);
   alert('Sorry, this location is not available, please try another URL');
 })
 
@@ -19,6 +20,7 @@ socket.on('receiveUpdate', function () { // sync with server state
 
 function initSocket() {
   console.log('Initialize connection');
+  console.log(placeName);
   socket.emit('newPlayer', placeName);
 
 }
