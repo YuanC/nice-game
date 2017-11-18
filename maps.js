@@ -56,10 +56,9 @@ function updateMapState (places, socket) {
         let tile = map[i][j]
 
         if (tile && tile['type'] === 'ground' && tile['plant']){
+          // console.log(tile)
           updateTile(tile, places[placeKey]['precip'])
-          // console.log('plant')
         }
-
       }
     }
 
@@ -67,15 +66,27 @@ function updateMapState (places, socket) {
     console.log(placeKey + ' updated')
 
   }
+}
 
+const VALUES = {
+  dry_change: -10,
+  wet_change: 10,
 }
 
 function updateTile (tile, precip) {
+  tile['plant']['progress'] += (precip ? VALUES.wet_change : VALUES.dry_change)
 
-  if (precip) {
+  if (tile['plant']['progress'] >= 100) {
+    tile['plant']['progress'] = 0
+    tile['plant']['stage'] = tile['plant']['stage'] + 1
 
-  } else {
+  } else if (tile['plant']['progress'] < 0) {
+    tile['plant']['progress'] = 90
+    tile['plant']['stage'] = tile['plant']['stage'] - 1
 
+    if (tile['plant']['stage'] < 0) {
+      tile['plant'] = null
+    }
   }
 
 }

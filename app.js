@@ -15,7 +15,7 @@ let places
 
 io.on('connection', (socket) => {
 
-  socket.on('newPlayer', (location) => {
+  socket.on('newPlayer', (location) => { // e.g. "toronto"
 
     if (places.hasOwnProperty(location)) {
       socket.location = location
@@ -35,14 +35,14 @@ io.on('connection', (socket) => {
     if (places.hasOwnProperty(socket.location)) {
       places[socket.location]['playerCount'] -= 1
       socket.to(socket.location).emit('playerCountChange', places[socket.location]['playerCount'])
-      
-      console.log(location + ': ' + places[socket.location]['playerCount'] + ' users')
+
+      console.log(socket.location + ': ' + places[socket.location]['playerCount'] + ' users')
     }
   })
 
-  socket.on('newPlant', (pos) => { // pos: [x: 0, y: 0]
+  socket.on('newPlant', (plant) => { // {pos: [x: 0, y: 0], type: ""}
 
-    maps.newPlant(places, socket.location, pos, (data) => { 
+    maps.newPlant(places, socket.location, plant, (data) => { 
       socket.to(socket.location).emit('tileChange', data)
     })
 
@@ -60,7 +60,9 @@ function startDataRefreshes() { // initialize function
 
   // TODO: Get an actual island map
   // Also, change the map size from 5x5 to 30x30
-  places = templates.placesTemplate
+  places = templates.getPlaces()
+  // console.log(places)
+
 
   maps.updateWeather(places, io)
   setInterval(() => {
