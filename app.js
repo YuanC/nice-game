@@ -16,14 +16,12 @@ let places
 function resetData() { // initialize function
   places = templates.placesTemplate
 
-  // generate maps, weather for each location
-  for (let key in places) {
-    if (places.hasOwnProperty(key)) {
-      // places[key]['map'] = maps.generateMap()
-      // places[key]['weather'] = maps.fetchWeather()
-    }
-  }
-
+  // TODO: Actually generate the correct stuff lol
+  maps.updateWeather(places)
+  
+  setInterval(() => {
+    maps.updateWeather(places)
+  }, 10000)
 }
 
 io.on('connection', (socket) => {

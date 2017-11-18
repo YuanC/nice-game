@@ -7,6 +7,12 @@ function createScene () { // Initialize scene
   // scene.debugLayer.show();
 
   var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+  camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+  camera.orthoTop = 5;
+  camera.orthoBottom = -5;
+  camera.orthoLeft = -5;
+  camera.orthoRight = 5;
+  
   camera.setTarget(BABYLON.Vector3.Zero());
   camera.attachControl(canvas, true);
 

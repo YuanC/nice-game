@@ -7,8 +7,10 @@ const api_url = 'https://hackathon.pic.pelmorex.com/api/data/ssp'
 exp.updateWeather = (places) => {
   console.log('updating map')
 
-  // fetches weather for each location in places
-  // for (let key in )
+  // fetches weather from API for each location in places
+  // if periods && periods[0]['intensity'] != "0" {
+    // set place.precip to true
+  // else false
 
   // updates plants
 }
