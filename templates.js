@@ -12,13 +12,13 @@ exp.placesTemplate = {
   'london': {
     'playerCount': 0,
     'map': mapTemplate.slice(0),
-    'percip': false,
+    'precip': false,
     'weather_api_id': 'CAON0383'
   },
   'vancouver': {
     'playerCount': 0,
     'map': mapTemplate.slice(0),
-    'percip': false,
+    'precip': false,
     'weather_api_id': 'CABC0308'
   }
 }
