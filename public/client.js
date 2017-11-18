@@ -11,8 +11,18 @@ socket.on('connectFail', function () {
   alert('Sorry, this location is not available, please try another URL');
 })
 
-socket.on('receiveUpdate', function () { // sync with server state
+socket.on('mapRefresh', function (places) { // sync with server state
+  console.log('Sync with server: ');
+  console.log(places);
+})
 
+socket.on('tileChange', function (data) { // sync with server state
+  console.log(data); // {pos: [], tileState: {}}
+})
+
+socket.on('playerCountChange', function (count) {
+  console.log('Player Count: ');
+  console.log(count);
 })
 
 // All the actions will be sent below to the server
