@@ -75,9 +75,9 @@ const VALUES = {
 
 function updateTile (tile, precip) {
 
-  if (tile['plant']['stage'] < 3) {
+  if (tile['plant']['stage'] < 1) {
     tile['plant']['progress'] += (precip ? VALUES.wet_change : VALUES.dry_change)
-
+    // console.log(tile['plant']['progress'])
     if (tile['plant']['progress'] >= 100) {
       tile['plant']['progress'] = 0
       tile['plant']['stage'] = tile['plant']['stage'] + 1
@@ -97,7 +97,7 @@ exp.newPlant = (places, placeKey, plant, callback) => {
   places[placeKey]['map'][plant.pos[0]][plant.pos[1]]['plant'] = { 
     'type': plant.type,
     'progress': 70,
-    'state': 0
+    'stage': 0
   }
   callback({'pos': plant.pos,
     'tile': places[placeKey]['map'][plant.pos[0]][plant.pos[1]]})

@@ -1,10 +1,9 @@
 // debug tools
 var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
-var camera, cam_height = 5;
+var camera, cam_height = 10, light;
 var treeSize = 1;
-var treeMatrix;
-var mapTemplate;
+var treeMatrix, mapTemplate;
 
 // Victor's variables
 var width, height;
@@ -44,7 +43,8 @@ var createScene = function () {
   camera.attachControl(canvas, true);
 
   // Add a light
-  var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+  light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+  
 
   // Map size parameters: length and width must be pos. integers
   // Unrelated to number of tiles on map
@@ -180,7 +180,7 @@ function renderGUI () {
   gui_placename.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
   gui_weather = new BABYLON.GUI.TextBlock();
-  gui_weather.text = 'The weather is ' + (data.precip ? 'wet': 'dry');
+  gui_weather.text = (data.precip ? 'Bless the rain!': 'It is dry');
   gui_weather.color = "white";
   gui_weather.fontSize = 26;
   gui_weather.paddingTop = 72;
@@ -204,25 +204,25 @@ function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
   rainEmitter.position.y = 10;
 
-  var rainParticleSystem = new BABYLON.ParticleSystem("rain", 300, scene);
+  var rainParticleSystem = new BABYLON.ParticleSystem("rain", 1000, scene);
 
   rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   rainParticleSystem.emitter = rainEmitter;
 
-  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-5, 0, -5); // Starting all From
-  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(5, 0, 5); // To...
+  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-10, 0, -10); // Starting all From
+  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(10, 0, 10); // To...
 
   rainParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
   rainParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
   rainParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
 
-  rainParticleSystem.minSize = 0.05;
-  rainParticleSystem.maxSize = 0.1;
+  rainParticleSystem.minSize = 0.1;
+  rainParticleSystem.maxSize = 0.2;
 
   rainParticleSystem.minLifeTime = 0.2;
   rainParticleSystem.maxLifeTime = 0.3;
 
-  rainParticleSystem.emitRate = 300;
+  rainParticleSystem.emitRate = 1500;
 
   rainParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
@@ -235,7 +235,6 @@ function renderRain () {
   rainParticleSystem.updateSpeed = 0.005;
 
   rainParticleSystem.start();
-
 }
 
 function updateScene (data) {
