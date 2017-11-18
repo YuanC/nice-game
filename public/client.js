@@ -14,9 +14,9 @@ socket.on('connectFail', function () {
   alert('Sorry, this location is not available, please try another URL');
 })
 
-socket.on('mapRefresh', function (places) { // sync with server state
+socket.on('mapRefresh', function (place) { // sync with server state
   console.log('Sync with server: ');
-  console.log(places);
+  console.log(place);
 })
 
 socket.on('tileChange', function (data) { // update given tile
