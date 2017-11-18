@@ -5,6 +5,8 @@ var camera, cam_height = 5;
 var treeSize = 1;
 var treeMatrix;
 var mapTemplate;
+var plantActionCd = 10000; // in milliseconds
+var firstAction = true;
 
 // Victor's variables
 var width, height;
@@ -129,10 +131,18 @@ var createScene = function () {
   // Need to determine coords first, all params necessary
   refreshMapObjects();
   
+  // Create cooldown for player actions
+  var start = new Date();
+
   //When pointer down event is raised
   scene.onPointerDown = function (evt, pickResult) {
-    // if the click hits the ground object
-    if (pickResult.hit) {
+    // Get time in ms
+    var elapsed = new Date() - start;
+    console.log("Time passed: " + elapsed);
+    // if the click hits the ground object and cooldown finished
+    if (pickResult.hit && (firstAction || elapsed >= plantActionCd)) {
+      firstAction = false;
+      start = new Date();
       // z is the depth, which is basically our y
       x = pickResult.pickedPoint.x;
       z = pickResult.pickedPoint.z;
