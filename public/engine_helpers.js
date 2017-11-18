@@ -225,15 +225,17 @@ function getGameGridZ(z, heightIsOdd, tileHeight, subdivisions) {
 }
 
 function createTree(x, z, size, scene) {
-  var greenBox = BABYLON.Mesh.CreateBox("greenBox", size, scene);
-  var greenMat = new BABYLON.StandardMaterial("ground", scene);
-  greenMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  greenMat.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  greenMat.emissiveColor = BABYLON.Color3.Green();
-  greenBox.material = greenMat;
+  var plane = BABYLON.Mesh.CreatePlane("", size, scene);
+  var treeMaterial = new BABYLON.StandardMaterial("tree", scene);
+  treeMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+  treeMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+  treeMaterial.emissiveColor = BABYLON.Color3.Green();
+  plane.material = treeMaterial;
+  plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   console.log("New object game coord: (" + x + ", " + z + ")");                            
-  greenBox.position.x = x;
-  greenBox.position.z = z;
+  plane.position.x = x;
+  plane.position.z = z;
+  plane.position.y = size / 2;
 
-  return greenBox;
+  return plane;
 }
