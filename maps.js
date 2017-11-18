@@ -19,7 +19,7 @@ exp.updateWeather = (places, socket) => {
         // get weather data from json and check periods precipitation
         let weatherData = JSON.parse(xmlhttp.responseText);
       	places[placeKey]['precip'] = weatherData.data.periods && (weatherData.data.periods[0]['intensity'] != '0')
-        console.log(placeKey + ' precipkey: "value",  ' + places[placeKey]['precip'])
+        console.log(placeKey + ' precip: ' + places[placeKey]['precip'])
         placesLength--
 
 	    } else if (xmlhttp.status == 403 || xmlhttp.status == 404) {

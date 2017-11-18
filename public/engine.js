@@ -3,6 +3,8 @@ var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 5;
 var treeSize = 1;
+var treeMatrix;
+var mapTemplate;
 
 /*
 Please refer to engine_helpers.js for necessary function calls
@@ -15,14 +17,17 @@ var createScene = function () {
   // Create a rotating camera
   camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2, Math.PI / 3, 12, BABYLON.Vector3.Zero(), scene);
   camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-  camera.orthoTop = 5;
-  camera.orthoBottom = -5;
-  camera.orthoLeft = -5;
-  camera.orthoRight = 5;
+
+  var wh_ratio = window.innerWidth/window.innerHeight;
+  camera.orthoTop = cam_height;
+  camera.orthoBottom = -cam_height;
+  camera.orthoLeft = -wh_ratio*cam_height;
+  camera.orthoRight = wh_ratio*cam_height;
+
   camera.lowerRadiusLimit = 12;
   camera.upperRadiusLimit = 12;
   camera.upperBetaLimit = Math.PI / 3;
-  camera.lowerBetaLimit = Math.PI / 3;
+  camera.lowerBetaLimit = Math.PI / 4;
   
   camera.setTarget(BABYLON.Vector3.Zero());
   camera.attachControl(canvas, true);
@@ -44,9 +49,7 @@ var createScene = function () {
   };
 
   // Get map from server
-  var mapTemplate = data.map;
-
-  // Make array of references here
+  mapTemplate = data.map;
 
   // Determine map template number of tiles lengthwise and widthwise
   var numTilesWidth = 0;
@@ -149,7 +152,9 @@ var createScene = function () {
       }
     }
   };
+
   renderGUI();
+  renderRain();
 
   return scene;
 }
@@ -187,7 +192,45 @@ function renderGUI () {
   gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 }
 
-function updateScene (newMap) {
+function renderRain () {
+  var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
+  rainEmitter.position.y = 10;
+
+  var rainParticleSystem = new BABYLON.ParticleSystem("rain", 500, scene);
+
+  rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
+  rainParticleSystem.emitter = rainEmitter;
+
+  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-5, 0, -5); // Starting all From
+  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(5, 0, 5); // To...
+
+  rainParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+  rainParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+  rainParticleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+  rainParticleSystem.minSize = 0.05;
+  rainParticleSystem.maxSize = 0.1;
+
+  rainParticleSystem.minLifeTime = 0.2;
+  rainParticleSystem.maxLifeTime = 0.3;
+
+  rainParticleSystem.emitRate = 500;
+
+  rainParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+  rainParticleSystem.gravity = new BABYLON.Vector3(0, -10, 0);
+  rainParticleSystem.direction1 = new BABYLON.Vector3(0, -10, 0);
+  rainParticleSystem.direction2 = new BABYLON.Vector3(0, -10, 0);
+
+  rainParticleSystem.minEmitPower = 10;
+  rainParticleSystem.maxEmitPower = 10;
+  rainParticleSystem.updateSpeed = 0.005;
+
+}
+
+function updateScene (data) {
+
+  rainParticleSystem.start();
 
   // socket.emit('plantSeed', data)
 }
@@ -203,7 +246,6 @@ function startBabylon () {
 
     scene.executeWhenReady(function () {
       engine.hideLoadingUI();
-      // console.log(socket);
 
       engine.runRenderLoop(function () {
         scene.render();

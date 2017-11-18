@@ -61,25 +61,41 @@ function getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight) {
 }
 
 function refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, numTilesWidth, heightIsOdd, tileHeight, numTilesHeight, scene) {
+  
+  if (!treeMatrix) {
+    treeMatrix = [];
+    for (var row = 0; row < subdivisions.h; row++) {
+      treeMatrix.push([]);
+      for (var col = 0; col < subdivisions.w; col++) {
+        treeMatrix[row].push(null);
+      }
+    }
+  }
+
   console.log("--- Refreshing map objects...");
+
   for (var row = 0; row < subdivisions.h; row++) {
     for (var col = 0; col < subdivisions.w; col++) {
-      if(mapTemplate[row][col] !== null) {
-        var currentType = mapTemplate[row][col].type;
-        console.log("Current type: " + currentType);
-        if(currentType === 'ground') {
-          var currentPlant =  mapTemplate[row][col].plant;
-          if(currentPlant !== null) {
-            // Show existing plant
-            console.log("Map already has this plant: " + currentPlant.type);
-            var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
-            var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
-            createTree(objCoordX, objCoordZ, treeSize, scene);
+
+      if(mapTemplate[row][col] != null 
+        && mapTemplate[row][col].type === 'ground') {
+
+        var currentPlant =  mapTemplate[row][col].plant;
+
+        if(currentPlant != null) {
+
+          if (treeMatrix[row][col]) { // Update current plant mesh
+            treeMatrix[row][col].dispose();
           }
-          else {
-            // No plant object here
-          }
-        }            
+          
+          var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
+          var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
+          treeMatrix[row][col] = createTree(objCoordX, objCoordZ, treeSize, scene);
+
+        } else if (treeMatrix[row][col]) { // delete plant
+          treeMatrix[row][col].dispose();
+        }
+                 
       }
     }
   }
@@ -192,4 +208,6 @@ function createTree(x, z, size, scene) {
   console.log("New object game coord: (" + x + ", " + z + ")");                            
   greenBox.position.x = x;
   greenBox.position.z = z;
+
+  return greenBox;
 }
