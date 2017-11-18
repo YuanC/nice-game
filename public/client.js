@@ -1,10 +1,10 @@
 var socket = io.connect();
 var placeName = window.location.pathname.toLowerCase().substring(1);
 
-var map, weathertext;
+var data;
 
-socket.on('connectSuccess', function (data) {
-  console.log(data);
+socket.on('connectSuccess', function (succ) {
+  data = succ;
   startBabylon();
 })
 
