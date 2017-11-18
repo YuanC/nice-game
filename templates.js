@@ -9,6 +9,23 @@ let mapTemplate = [
   [null, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, null]
 ]
 
+// For testing
+// Template map (odd)
+// var mapTemplate = [
+//     [null, null, null, null, null],
+//     [{'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}],
+//     [{'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 3, 'stage': 1}}, {'type': 'ground', 'plant': null}, {'type': 'ground', 'plant': null}, {'type': 'water'}],
+//     [{'type': 'water'}, {'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 2, 'stage': 0}}, {'type': 'water'}, {'type': 'water'}],
+//     [null, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, null]
+// ]
+// Template map (even)
+// var mapTemplate = [
+//     [{'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}],
+//     [{'type': 'ground', 'plant': {'type': 'tree', 'progress': 3, 'stage': 1}}, {'type': 'ground', 'plant': null}, {'type': 'ground', 'plant': null}, {'type': 'water'}],
+//     [{'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 2, 'stage': 0}}, {'type': 'water'}, {'type': 'water'}],
+//     [{'type': 'water'}, {'type': 'water'}, {'type': 'water'}, null]
+// ]
+
 exp.getPlaces = () => {
 
   let places = {
