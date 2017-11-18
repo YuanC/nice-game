@@ -40,20 +40,19 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('newPlant', (plant) => { // {pos: [x: 0, y: 0], type: ""}
+  socket.on('newPlant', (plant) => { // {pos: [x: 0, y: 0], type: ''}
 
     maps.newPlant(places, socket.location, plant, (data) => { 
       socket.to(socket.location).emit('tileChange', data)
     })
-
   })
 
   socket.on('waterPlant', (pos) => { // pos: [x: 0, y: 0]
+
     maps.waterPlant(places, socket.location, pos, (data) => {
       socket.to(socket.location).emit('tileChange', data)
     })
   })
-
 })
 
 function startDataRefreshes() { // initialize function

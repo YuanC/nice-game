@@ -19,7 +19,7 @@ exp.updateWeather = (places, socket) => {
         // get weather data from json and check periods precipitation
         let weatherData = JSON.parse(xmlhttp.responseText);
       	places[placeKey]['precip'] = weatherData.data.periods && (weatherData.data.periods[0]['intensity'] != '0')
-        console.log(placeKey + ' precip set to ' + places[placeKey]['precip'])
+        console.log(placeKey + ' precipkey: "value",  ' + places[placeKey]['precip'])
         placesLength--
 
 	    } else if (xmlhttp.status == 403 || xmlhttp.status == 404) {
@@ -34,7 +34,6 @@ exp.updateWeather = (places, socket) => {
       if (placesLength == 0) {
         updateMapState(places, socket)
       }
-
 		}
 		xmlhttp.open("GET", "https://hackathon.pic.pelmorex.com/api/data/ssp?locationcode=" + places[placeKey].weather_api_id, true)
 		xmlhttp.send()
@@ -70,33 +69,62 @@ function updateMapState (places, socket) {
 
 const VALUES = {
   dry_change: -10,
-  wet_change: 10,
+  wet_change: 5,
+  water_change: 20
 }
 
 function updateTile (tile, precip) {
-  tile['plant']['progress'] += (precip ? VALUES.wet_change : VALUES.dry_change)
 
-  if (tile['plant']['progress'] >= 100) {
-    tile['plant']['progress'] = 0
-    tile['plant']['stage'] = tile['plant']['stage'] + 1
+  if (tile['plant']['stage'] < 3) {
+    tile['plant']['progress'] += (precip ? VALUES.wet_change : VALUES.dry_change)
 
-  } else if (tile['plant']['progress'] < 0) {
-    tile['plant']['progress'] = 90
-    tile['plant']['stage'] = tile['plant']['stage'] - 1
+    if (tile['plant']['progress'] >= 100) {
+      tile['plant']['progress'] = 0
+      tile['plant']['stage'] = tile['plant']['stage'] + 1
 
-    if (tile['plant']['stage'] < 0) {
-      tile['plant'] = null
+    } else if (tile['plant']['progress'] < 0) {
+      tile['plant']['progress'] = 90
+      tile['plant']['stage'] = tile['plant']['stage'] - 1
+
+      if (tile['plant']['stage'] < 0) {
+        tile['plant'] = null
+      }
     }
   }
-
 }
 
-exp.newPlant = (places, placeKey, pos, callback) => {
-
+exp.newPlant = (places, placeKey, plant, callback) => {
+  places[placeKey]['map'][plant.pos[0]][plant.pos[1]]['plant'] = { 
+    'type': plant.type,
+    'progress': 70,
+    'state': 0
+  }
+  callback(plant)
 }
 
 exp.waterPlant = (places, placeKey, pos, callback) => {
   
+  if (places[placeKey]['map'][pos[0]][pos[1]]['plant']['stage'] < 3) {
+
+    places[placeKey]['map'][pos[0]][pos[1]]['plant']['progress'] += water_change
+
+    if (tile['plant']['progress'] >= 100) {
+
+      tile['plant']['progress'] = 0
+      tile['plant']['stage'] = tile['plant']['stage'] + 1
+
+    } else if (tile['plant']['progress'] < 0) {
+
+      tile['plant']['progress'] = 90
+      tile['plant']['stage'] = tile['plant']['stage'] - 1
+
+      if (tile['plant']['stage'] < 0) {
+        tile['plant'] = null
+      }
+    }
+
+    callback(places[placeKey]['map'][pos[0]][pos[1]]['plant'])
+  }
 }
 
 exp.generateMap = () => {

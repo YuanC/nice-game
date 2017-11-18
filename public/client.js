@@ -5,6 +5,7 @@ var data, userCnt;
 
 socket.on('connectSuccess', function (succ) {
   data = succ;
+  console.log(succ);
   userCnt = data.playerCount;
   startBabylon();
 })
@@ -17,6 +18,7 @@ socket.on('connectFail', function () {
 socket.on('mapRefresh', function (place) { // sync with server state
   console.log('Sync with server: ');
   console.log(place);
+
 })
 
 socket.on('tileChange', function (data) { // update given tile

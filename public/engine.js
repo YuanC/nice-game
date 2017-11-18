@@ -1,7 +1,7 @@
 // debug tools
 var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
-var camera, cam_height = 5;
+var camera, cam_height = 20;
 
 function generateMapTiles(tiledGround, mapTemplate, subdivisions) {
   // Needed variables to set subMeshes
@@ -202,12 +202,15 @@ var createScene = function () {
   // Create a rotating camera
   var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2, Math.PI / 3, 12, BABYLON.Vector3.Zero(), scene);
   camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-  camera.orthoTop = 5;
-  camera.orthoBottom = -5;
-  camera.orthoLeft = -5;
-  camera.orthoRight = 5;
-  camera.lowerRadiusLimit = 12;
-  camera.upperRadiusLimit = 12;
+
+  camera.orthoTop = cam_height;
+  camera.orthoBottom = -cam_height;
+  var wh_ratio = window.innerWidth/window.innerHeight;
+  camera.orthoLeft = -wh_ratio*cam_height;
+  camera.orthoRight = wh_ratio*cam_height;
+
+  camera.lowerRadiusLimit = 10;
+  camera.upperRadiusLimit = 10;
   camera.upperBetaLimit = Math.PI / 3;
   camera.lowerBetaLimit = Math.PI / 3;
   
