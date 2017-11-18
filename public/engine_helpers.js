@@ -60,7 +60,7 @@ function getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight) {
   return objCoordZ;
 }
 
-function refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, numTilesWidth, heightIsOdd, tileHeight, numTilesHeight, scene) {
+function refreshMapObjects() {
   
   if (!treeMatrix) {
     treeMatrix = [];
@@ -95,8 +95,34 @@ function refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, num
         } else if (treeMatrix[row][col]) { // delete plant
           treeMatrix[row][col].dispose();
         }
-                 
       }
+    }
+  }
+}
+
+function refreshMapTile (pos, tile) {
+  var row = pos[0];
+  var col = pos[1];
+
+  mapTemplate[row][col] = tile;
+
+  if(mapTemplate[row][col] != null 
+    && mapTemplate[row][col].type === 'ground') {
+
+    var currentPlant =  mapTemplate[row][col].plant;
+
+    if(currentPlant != null) {
+
+      if (treeMatrix[row][col]) { // Update current plant mesh
+        treeMatrix[row][col].dispose();
+      }
+      
+      var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
+      var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
+      treeMatrix[row][col] = createTree(objCoordX, objCoordZ, treeSize, scene);
+
+    } else if (treeMatrix[row][col]) { // delete plant
+      treeMatrix[row][col].dispose();
     }
   }
 }

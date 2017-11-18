@@ -99,7 +99,8 @@ exp.newPlant = (places, placeKey, plant, callback) => {
     'progress': 70,
     'state': 0
   }
-  callback(plant)
+  callback({'pos': plant.pos,
+    'tile': places[placeKey]['map'][plant.pos[0]][plant.pos[1]]})
 }
 
 exp.waterPlant = (places, placeKey, pos, callback) => {
@@ -123,7 +124,8 @@ exp.waterPlant = (places, placeKey, pos, callback) => {
       }
     }
 
-    callback(places[placeKey]['map'][pos[0]][pos[1]]['plant'])
+    callback({'pos': pos,
+      'tile': places[placeKey]['map'][pos[0]][pos[1]]})
   }
 }
 

@@ -5,7 +5,7 @@ let mapTemplate = [
   [null, null, null, null, null],
   [{'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}],
   [{'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 20, 'stage': 0}}, {'type': 'ground', 'plant': null}, {'type': 'ground', 'plant': null}, {'type': 'water'}],
-  [{'type': 'water'}, {'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 2, 'stage': 4}}, {'type': 'water'}, {'type': 'water'}],
+  [{'type': 'water'}, {'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 2, 'stage': 2}}, {'type': 'water'}, {'type': 'water'}],
   [null, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, null],
 ]
 

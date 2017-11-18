@@ -15,56 +15,10 @@ socket.on('connectFail', function () {
   alert('Sorry, this location is not available, please try another URL');
 })
 
-socket.on('mapRefresh', function (place) { // sync with server state
-  console.log('Sync with server: ');
-  console.log(place);
-  mapTemplate = place['map'];
-
-  var width = 3;
-  var height = 3;
-  var xmin = width * -1;
-  var zmin = height * -1;
-  var xmax = width;
-  var zmax = height;
-  
-  var numTilesWidth = 0;
-  var numTilesHeight = 0;
-  numTilesWidth = mapTemplate[0].length;
-  numTilesHeight = mapTemplate.length;
-  
-  // Actual number of tiles
-  var subdivisions = {
-      'h' : numTilesHeight, // corresponds to z axis
-      'w' : numTilesWidth  // corresponds to x axis
-  };
-
-  var widthTotalDistance = Math.abs(xmax - xmin);
-  var heightTotalDistance = Math.abs(zmax - zmin);
-  var tileWidth = widthTotalDistance / subdivisions.w;
-  var tileHeight = heightTotalDistance / subdivisions.h;
-  // Odd/even flags
-  var widthIsOdd;
-  if(subdivisions.w % 2 !== 0) {
-      widthIsOdd = true;
-  }
-  else {
-      widthIsOdd = false;
-  }
-  var heightIsOdd;
-  if(subdivisions.h % 2 !== 0) {
-      heightIsOdd = true;
-  }
-  else {
-      heightIsOdd = false;
-  }
-
-  refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, 
-    numTilesWidth, heightIsOdd, tileHeight, numTilesHeight, scene);
-  
-})
-
 socket.on('tileChange', function (data) { // update given tile
+  console.log('Tile Change'); // {pos: [], tileState: {}}
   console.log(data); // {pos: [], tileState: {}}
+  refreshMapTile(data.pos, data.tile);
 })
 
 socket.on('playerCountChange', function (count) {
@@ -72,6 +26,15 @@ socket.on('playerCountChange', function (count) {
   // console.log(count);
   userCnt = count;
   gui_usercount.text = userCnt + ' user(s) connected';
+  
+})
+
+socket.on('mapRefresh', function (place) { // sync with server state
+  console.log('Sync with server: ');
+  console.log(place);
+  mapTemplate = place['map'];
+
+  refreshMapObjects();
   
 })
 

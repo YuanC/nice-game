@@ -6,6 +6,17 @@ var treeSize = 1;
 var treeMatrix;
 var mapTemplate;
 
+// Victor's variables
+var width, height;
+var xmin, zmin;
+var xmax, zmax;
+var precision;
+var numTilesWidth, numTilesHeight;
+var subdivisions;
+var widthTotalDistance, heightTotalDistance;
+var tileWidth, tileHeight;
+var widthIsOdd, heightIsOdd;
+
 /*
 Please refer to engine_helpers.js for necessary function calls
 */
@@ -37,13 +48,13 @@ var createScene = function () {
 
   // Map size parameters: length and width must be pos. integers
   // Unrelated to number of tiles on map
-  var width = 3;
-  var height = 3;
-  var xmin = width * -1;
-  var zmin = height * -1;
-  var xmax = width;
-  var zmax = height;
-  var precision = {
+  width = 3;
+  height = 3;
+  xmin = width * -1;
+  zmin = height * -1;
+  xmax = width;
+  zmax = height;
+  precision = {
       "w" : 1,
       "h" : 1
   };
@@ -52,14 +63,14 @@ var createScene = function () {
   mapTemplate = data.map;
 
   // Determine map template number of tiles lengthwise and widthwise
-  var numTilesWidth = 0;
-  var numTilesHeight = 0;
+  numTilesWidth = 0;
+  numTilesHeight = 0;
   numTilesWidth = mapTemplate[0].length;
   numTilesHeight = mapTemplate.length;
   
   console.log("Template map dimensions: " + numTilesWidth + "x" + numTilesHeight);
   // Actual number of tiles
-  var subdivisions = {
+  subdivisions = {
       'h' : numTilesHeight, // corresponds to z axis
       'w' : numTilesWidth  // corresponds to x axis
   };
@@ -95,19 +106,19 @@ var createScene = function () {
   generateMapTiles(tiledGround, mapTemplate, subdivisions);
 
   // Some math variables for grid calculations
-  var widthTotalDistance = Math.abs(xmax - xmin);
-  var heightTotalDistance = Math.abs(zmax - zmin);
-  var tileWidth = widthTotalDistance / subdivisions.w;
-  var tileHeight = heightTotalDistance / subdivisions.h;
+  widthTotalDistance = Math.abs(xmax - xmin);
+  heightTotalDistance = Math.abs(zmax - zmin);
+  tileWidth = widthTotalDistance / subdivisions.w;
+  tileHeight = heightTotalDistance / subdivisions.h;
   // Odd/even flags
-  var widthIsOdd;
+  widthIsOdd;
   if(subdivisions.w % 2 !== 0) {
       widthIsOdd = true;
   }
   else {
       widthIsOdd = false;
   }
-  var heightIsOdd;
+  heightIsOdd;
   if(subdivisions.h % 2 !== 0) {
       heightIsOdd = true;
   }
@@ -116,7 +127,7 @@ var createScene = function () {
   }
 
   // Need to determine coords first, all params necessary
-  refreshMapObjects(mapTemplate, subdivisions, widthIsOdd, tileWidth, numTilesWidth, heightIsOdd, tileHeight, numTilesHeight, scene);
+  refreshMapObjects();
   
   //When pointer down event is raised
   scene.onPointerDown = function (evt, pickResult) {
@@ -143,10 +154,7 @@ var createScene = function () {
           else {
             // Can make new plant
             // Need to update server array
-            console.log("No plant here, can plant something");                        
-            var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-            var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);
-            createTree(objCoordX, objCoordZ, treeSize, scene);
+            socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': 'tree'});
           }
         }            
       }
@@ -196,7 +204,7 @@ function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
   rainEmitter.position.y = 10;
 
-  var rainParticleSystem = new BABYLON.ParticleSystem("rain", 500, scene);
+  var rainParticleSystem = new BABYLON.ParticleSystem("rain", 300, scene);
 
   rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   rainParticleSystem.emitter = rainEmitter;
@@ -214,7 +222,7 @@ function renderRain () {
   rainParticleSystem.minLifeTime = 0.2;
   rainParticleSystem.maxLifeTime = 0.3;
 
-  rainParticleSystem.emitRate = 500;
+  rainParticleSystem.emitRate = 300;
 
   rainParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
@@ -225,6 +233,8 @@ function renderRain () {
   rainParticleSystem.minEmitPower = 10;
   rainParticleSystem.maxEmitPower = 10;
   rainParticleSystem.updateSpeed = 0.005;
+
+  rainParticleSystem.start();
 
 }
 
