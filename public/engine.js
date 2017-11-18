@@ -13,7 +13,7 @@ var createScene = function () {
   camera.orthoTop = cam_height;
   camera.orthoBottom = -cam_height;
   camera.orthoLeft = -wh_ratio*cam_height;  
-  camera.orthoRight = wh_ratio*cam_height;
+  camera.orthoRight = wh_ratio*cam_height; 
   
   camera.setTarget(BABYLON.Vector3.Zero());
   camera.attachControl(canvas, true);
@@ -328,7 +328,7 @@ function renderGUI () {
   gui_placename.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
   gui_weather = new BABYLON.GUI.TextBlock();
-  gui_weather.text = 'The weather is ' + (data.precip ? 'et': 'dry');
+  gui_weather.text = 'The weather is ' + (data.precip ? 'wet': 'dry');
   gui_weather.color = "white";
   gui_weather.fontSize = 26;
   gui_weather.paddingTop = 72;
