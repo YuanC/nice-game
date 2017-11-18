@@ -1,16 +1,22 @@
 // debug tools
 var canvas, engine, scene;
+var gui, gui_placename, gui_weather, gui_usercount;
+var camera, cam_height = 5;
 
 var createScene = function () {
     var scene = new BABYLON.Scene(engine);
 
-    // Create a rotating camera
-    var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2, Math.PI / 3, 12, BABYLON.Vector3.Zero(), scene);
-    camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-    camera.orthoTop = 5;
-    camera.orthoBottom = -5;
-    camera.orthoLeft = -5;
-    camera.orthoRight = 5;
+  camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+  camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+
+  var wh_ratio = window.innerWidth/window.innerHeight;
+  camera.orthoTop = cam_height;
+  camera.orthoBottom = -cam_height;
+  camera.orthoLeft = -wh_ratio*cam_height;  
+  camera.orthoRight = wh_ratio*cam_height;
+  
+  camera.setTarget(BABYLON.Vector3.Zero());
+  camera.attachControl(canvas, true);
 
     camera.setTarget(BABYLON.Vector3.Zero());
 
@@ -304,10 +310,43 @@ var createScene = function () {
             }
         }
     };
+  renderGUI();
 
-    return scene;
+  return scene;
 }
 
+function renderGUI () {
+  // GUI
+  var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+  gui_placename = new BABYLON.GUI.TextBlock();
+  gui_placename.text = placeName.charAt(0).toUpperCase() + placeName.slice(1);
+  gui_placename.color = "white";
+  gui_placename.fontSize = 72;
+  gui_placename.fontFamily = "Arial";
+  advancedTexture.addControl(gui_placename);
+  gui_placename.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+  gui_placename.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+  gui_weather = new BABYLON.GUI.TextBlock();
+  gui_weather.text = 'The weather is ' + (data.precip ? 'et': 'dry');
+  gui_weather.color = "white";
+  gui_weather.fontSize = 26;
+  gui_weather.paddingTop = 72;
+  gui_weather.paddingLeft = 8;
+  gui_weather.fontFamily = "Arial";
+  advancedTexture.addControl(gui_weather);
+  gui_weather.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+  gui_weather.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+  gui_usercount = new BABYLON.GUI.TextBlock();
+  gui_usercount.text = userCnt + ' user(s) connected';
+  gui_usercount.color = "white";
+  gui_usercount.fontSize = 14;
+  gui_usercount.fontFamily = "Arial";
+  advancedTexture.addControl(gui_usercount);
+  gui_usercount.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+  gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+}
 
 function updateScene (newMap) {
 
@@ -329,14 +368,15 @@ function startBabylon () {
 
       engine.runRenderLoop(function () {
         scene.render();
-
-        // TODO: Request update from server
-        // socket update => callback update
       });
     });
 
     window.addEventListener("resize", function () {
       engine.resize();
+
+      var wh_ratio = window.innerWidth/window.innerHeight;
+      camera.orthoLeft = -wh_ratio*cam_height;
+      camera.orthoRight = wh_ratio*cam_height;
     });
   } else {
       alert("Sorry! Your browser isn't supported :(");

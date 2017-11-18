@@ -1,8 +1,11 @@
 var socket = io.connect();
 var placeName = window.location.pathname.toLowerCase().substring(1);
 
-socket.on('connectSuccess', function (data) {
-  console.log(data);
+var data, userCnt;
+
+socket.on('connectSuccess', function (succ) {
+  data = succ;
+  userCnt = data.playerCount;
   startBabylon();
 })
 
@@ -11,8 +14,21 @@ socket.on('connectFail', function () {
   alert('Sorry, this location is not available, please try another URL');
 })
 
-socket.on('receiveUpdate', function () { // sync with server state
+socket.on('mapRefresh', function (places) { // sync with server state
+  console.log('Sync with server: ');
+  console.log(places);
+})
 
+socket.on('tileChange', function (data) { // update given tile
+  console.log(data); // {pos: [], tileState: {}}
+})
+
+socket.on('playerCountChange', function (count) {
+  // console.log('Player Count: ');
+  // console.log(count);
+  userCnt = count;
+  gui_usercount.text = userCnt + ' user(s) connected';
+  
 })
 
 // All the actions will be sent below to the server

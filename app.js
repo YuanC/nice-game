@@ -13,28 +13,18 @@ app.get('/*', (req,res) => res.sendFile(__dirname + '/index.html'))
 
 let places
 
-function resetData() { // initialize function
-  places = templates.placesTemplate
-
-  // TODO: Actually generate the correct stuff lol
-  maps.updateWeather(places)
-  
-  setInterval(() => {
-    maps.updateWeather(places)
-  }, 10000)
-}
-
 io.on('connection', (socket) => {
-  console.log('Client Connected')
-  var addedUser = false
 
-  socket.on('newPlayer', (location) => {
+  socket.on('newPlayer', (location) => { // e.g. "toronto"
 
     if (places.hasOwnProperty(location)) {
       socket.location = location
       places[socket.location]['playerCount'] += 1
       socket.emit('connectSuccess', places[location])
-      // socket.
+      socket.join(socket.location)
+      socket.to(socket.location).emit('playerCountChange', places[socket.location]['playerCount'])
+
+      console.log(location + ': ' + places[socket.location]['playerCount'] + ' users')
     } else {
       socket.emit('connectFail')
     }
@@ -44,18 +34,43 @@ io.on('connection', (socket) => {
     console.log('Client Disconnected')
     if (places.hasOwnProperty(socket.location)) {
       places[socket.location]['playerCount'] -= 1
+      socket.to(socket.location).emit('playerCountChange', places[socket.location]['playerCount'])
+
+      console.log(socket.location + ': ' + places[socket.location]['playerCount'] + ' users')
     }
+  })
+
+  socket.on('newPlant', (plant) => { // {pos: [x: 0, y: 0], type: ""}
+
+    maps.newPlant(places, socket.location, plant, (data) => { 
+      socket.to(socket.location).emit('tileChange', data)
+    })
+
+  })
+
+  socket.on('waterPlant', (pos) => { // pos: [x: 0, y: 0]
+    maps.waterPlant(places, socket.location, pos, (data) => {
+      socket.to(socket.location).emit('tileChange', data)
+    })
   })
 
 })
 
+function startDataRefreshes() { // initialize function
 
-resetData()
+  // TODO: Get an actual island map
+  // Also, change the map size from 5x5 to 30x30
+  places = templates.getPlaces()
+  // console.log(places)
 
-// Update map state (weather, plant status)
-setInterval(() => {
-  maps.updateWeather(places)
-}, 10000)
 
-http.listen(3000, () => console.log('Listening on port 3000'))
+  maps.updateWeather(places, io)
+  setInterval(() => {
+    maps.updateWeather(places, io)
+  }, 10000)
+}
+
+startDataRefreshes()
+
+http.listen(3001, () => console.log('Listening on port 3001'))
 
