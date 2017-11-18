@@ -14,7 +14,7 @@ function createScene () { // Initialize scene
   var wh_ratio = window.innerWidth/window.innerHeight;
   camera.orthoTop = cam_height;
   camera.orthoBottom = -cam_height;
-  camera.orthoLeft = -wh_ratio*cam_height;
+  camera.orthoLeft = -wh_ratio*cam_height;  
   camera.orthoRight = wh_ratio*cam_height;
   
   camera.setTarget(BABYLON.Vector3.Zero());
@@ -35,16 +35,16 @@ function createScene () { // Initialize scene
 function renderGUI () {
   // GUI
   var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-  var gui_placeneame = new BABYLON.GUI.TextBlock();
-  gui_placeneame.text = placeName.charAt(0).toUpperCase() + placeName.slice(1);
-  gui_placeneame.color = "white";
-  gui_placeneame.fontSize = 72;
-  gui_placeneame.fontFamily = "Arial";
-  advancedTexture.addControl(gui_placeneame);
-  gui_placeneame.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-  gui_placeneame.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+  gui_placename = new BABYLON.GUI.TextBlock();
+  gui_placename.text = placeName.charAt(0).toUpperCase() + placeName.slice(1);
+  gui_placename.color = "white";
+  gui_placename.fontSize = 72;
+  gui_placename.fontFamily = "Arial";
+  advancedTexture.addControl(gui_placename);
+  gui_placename.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+  gui_placename.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
-  var gui_weather = new BABYLON.GUI.TextBlock();
+  gui_weather = new BABYLON.GUI.TextBlock();
   gui_weather.text = 'The weather is ' + (data.precip ? 'et': 'dry');
   gui_weather.color = "white";
   gui_weather.fontSize = 26;
