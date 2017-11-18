@@ -222,8 +222,8 @@ var createScene = function () {
 
   // Map size parameters: length and width must be pos. integers
   // Unrelated to number of tiles on map
-  var width = 3;
-  var height = 3;
+  var width = 100;
+  var height = 100;
   var xmin = width * -1;
   var zmin = height * -1;
   var xmax = width;
@@ -337,6 +337,7 @@ var createScene = function () {
           }
           else {
             // Can make new plant
+            // Need to update server array
             console.log("No plant here, can plant something");                        
             var greenBox = BABYLON.Mesh.CreateBox("greenBox", 1, scene);
             var greenMat = new BABYLON.StandardMaterial("ground", scene);
