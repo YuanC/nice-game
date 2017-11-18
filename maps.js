@@ -104,11 +104,3 @@ exp.generateMap = () => {
   // return tile matrix
 }
 
-// Game Data Representation
-
-// Generation
-
-// State of each Tile
-
-// update functions for each 
-

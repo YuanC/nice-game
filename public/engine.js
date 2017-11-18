@@ -1,6 +1,6 @@
 // debug tools
 var canvas, engine, scene;
-var gui, gui_placename, gui_weather;
+var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 5;
 
 function createScene () { // Initialize scene
@@ -54,6 +54,15 @@ function renderGUI () {
   advancedTexture.addControl(gui_weather);
   gui_weather.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
   gui_weather.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+  gui_usercount = new BABYLON.GUI.TextBlock();
+  gui_usercount.text = userCnt + ' user(s) connected';
+  gui_usercount.color = "white";
+  gui_usercount.fontSize = 14;
+  gui_usercount.fontFamily = "Arial";
+  advancedTexture.addControl(gui_usercount);
+  gui_usercount.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+  gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 }
 
 function updateScene (newMap) {
@@ -76,9 +85,6 @@ function startBabylon () {
 
       engine.runRenderLoop(function () {
         scene.render();
-
-        // TODO: Request update from server
-        // socket update => callback update
       });
     });
 
