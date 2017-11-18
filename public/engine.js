@@ -46,6 +46,8 @@ var createScene = function () {
   // Get map from server
   var mapTemplate = data.map;
 
+  // Make array of references here
+
   // Determine map template number of tiles lengthwise and widthwise
   var numTilesWidth = 0;
   var numTilesHeight = 0;
