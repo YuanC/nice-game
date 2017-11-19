@@ -492,10 +492,10 @@ function clearHighlightTile() {
     gameGridZ = null;
     // Plant buttons
     activePlantButton.isVisible = false;
-    // inactivePlantButton.isVisible = true;
+    inactivePlantButton.isVisible = true;
     // Water buttons
     activeWaterButton.isVisible = false;
-    // inactiveWaterButton.isVisible = true;
+    inactiveWaterButton.isVisible = true;
     // Plant panel
     plantPanel.isVisible = false;
   }
