@@ -4,8 +4,8 @@ const deep_copy_array_or_object = (obj => JSON.parse (JSON.stringify(obj)));
 let mapTemplate = [
   [null, null, null, null, null],
   [{'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}],
-  [{'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 20, 'stage': 0}}, {'type': 'ground', 'plant': null}, {'type': 'ground', 'plant': null}, {'type': 'water'}],
-  [{'type': 'water'}, {'type': 'water'}, {'type': 'ground', 'plant': {'type': 'tree', 'progress': 2, 'stage': 2}}, {'type': 'water'}, {'type': 'water'}],
+  [{'type': 'water'}, {'type': 'ground', 'plant': {'type': 'shrub', 'progress': 90, 'stage': 0}}, {'type': 'ground', 'plant': null}, {'type': 'ground', 'plant': null}, {'type': 'water'}],
+  [{'type': 'water'}, {'type': 'water'}, {'type': 'ground', 'plant': {'type': 'flower', 'progress': 2, 'stage': 2}}, {'type': 'water'}, {'type': 'water'}],
   [null, {'type': 'water'}, {'type': 'water'}, {'type': 'water'}, null],
 ]
 

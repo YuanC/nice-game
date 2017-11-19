@@ -3,6 +3,8 @@ var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 10, light;
 var treeSize = 1;
+var flowerSize = 0.5;
+var shrubSize = 0.5;
 var rainParticleSystem, rainMusic;
 var treeMatrix, mapTemplate;
 var plantActionCd = 10000; // in milliseconds
@@ -82,13 +84,14 @@ var createScene = function () {
   var tiledGround = new BABYLON.Mesh.CreateTiledGround("Tiled Ground", xmin, zmin, xmax, zmax, subdivisions, precision, scene);
 
   // Create the multi material, set textures
-  // Lawn green rgb(124,252,0)
   var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-  groundMaterial.diffuseColor = new BABYLON.Color3(124, 252, 0);
-  // Deep sky blue rgb(0,191,255)
+  groundMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/ground.png", scene);
+  groundMaterial.diffuseTexture.hasAlpha = true;
+  // 
   var waterMaterial = new BABYLON.StandardMaterial("water", scene);
-  waterMaterial.diffuseColor = new BABYLON.Color3(0, 191, 255);
-  // Grey rgb(220,220,220)
+  waterMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/water.png", scene);
+  waterMaterial.diffuseTexture.hasAlpha = true;
+  // 
   var errorMaterial = new BABYLON.StandardMaterial("error", scene);
   errorMaterial.diffuseColor = new BABYLON.Color3(220, 220, 220);
   // Null material
@@ -264,7 +267,7 @@ function updateWeather () {
     scene.clearColor = new BABYLON.Color3(0.4078, 0.8235, 0.9098);
     rainMusic.stop();
     rainParticleSystem.stop();
-    light.diffuse = new BABYLON.Color3(0.5, 0.5, 0.5);
+    light.diffuse = new BABYLON.Color3(1, 1, 1);
 
   }
 
