@@ -141,7 +141,8 @@ var createScene = function () {
     var elapsed = new Date() - start;
     console.log("Time passed: " + elapsed);
     // if the click hits the ground object and cooldown finished
-    if (pickResult.hit && (firstAction || elapsed >= plantActionCd)) {
+    // if (pickResult.hit && (firstAction || elapsed >= plantActionCd)) {
+    if (pickResult.hit) {
       firstAction = false;
       start = new Date();
       // z is the depth, which is basically our y
