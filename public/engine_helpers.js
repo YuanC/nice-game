@@ -416,6 +416,55 @@ function showProgress(gameGridX, gameGridZ, size, scene) {
   return progressBar;
 }
 
+function displayCd() {
+  // Create plane object
+  var displayCd = BABYLON.Mesh.CreatePlane("", 2, scene);
+
+  // Create texture for text
+  var cdTexture = new BABYLON.DynamicTexture("cdTexture", 256, scene, true);
+
+  // Create material for plane
+  var cdMaterial = new BABYLON.StandardMaterial("cdMaterial", scene);
+  cdMaterial.opacityTexture = cdTexture;
+  cdMaterial.diffuseTexture = cdTexture;
+  displayCd.material = cdMaterial;
+
+  // Set billboard
+  displayCd.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+
+  // Set coordinates
+  var objCoordX = getObjCoordX(gameGridX);
+  var objCoordZ = getObjCoordZ(gameGridZ);                       
+  displayCd.position.x = objCoordX;
+  displayCd.position.z = objCoordZ;
+  displayCd.position.y = 1 * 2;
+
+  // Display text
+  var font = "bold 70px Segoe UI";
+  var invertY = true;
+  var text = "Wait "+ (plantActionCd / 1000) + 's';
+  var color = "white"
+  var x = 10;
+  var y = 100;
+  
+  cdTexture.drawText(text, x, y, font, color, "transparent");
+
+  setTimeout(destroyCd, 2000, displayCd);
+
+  function destroyCd(cdMesh) {
+    cdMesh.dispose();
+  }
+}
+
+function resetActiveButtons() {
+  activePlantButton.isVisible = false;
+  activeWaterButton.isVisible = false;
+  inactivePlantButton.isVisible = true;
+  inactiveWaterButton.isVisible = true;
+  firstAction = false;
+  start = new Date().getTime();
+}
+
 function createHighlightTile(gameGridX, gameGridZ, scene) {
   var objCoordX = getObjCoordX(gameGridX);
   var objCoordZ = getObjCoordZ(gameGridZ);
@@ -432,8 +481,22 @@ function createHighlightTile(gameGridX, gameGridZ, scene) {
 
   highlighted = true;
 
-  plantButton.isVisible = true;
-  waterButton.isVisible = true;
-
   return highlightTile;
+}
+
+function clearHighlightTile() {
+  if(highlightTile !== null) {
+    highlightTile.dispose();
+    highlighted = false;
+    gameGridX = null;
+    gameGridZ = null;
+    // Plant buttons
+    activePlantButton.isVisible = false;
+    // inactivePlantButton.isVisible = true;
+    // Water buttons
+    activeWaterButton.isVisible = false;
+    // inactiveWaterButton.isVisible = true;
+    // Plant panel
+    plantPanel.isVisible = false;
+  }
 }
