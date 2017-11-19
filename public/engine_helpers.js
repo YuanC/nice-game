@@ -287,7 +287,7 @@ function createTree(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    plane.material.emissiveColor = BABYLON.Color3.White();
+    // plane.material.emissiveColor = BABYLON.Color3.White();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
@@ -295,7 +295,7 @@ function createTree(gameGridX, gameGridZ, size, scene) {
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
     // Get rid of color
-    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
+    // plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -325,14 +325,14 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    plane.material.emissiveColor = BABYLON.Color3.Black();
+    // plane.material.emissiveColor = BABYLON.Color3.Black();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
+    // plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -362,14 +362,14 @@ function createShrub(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    plane.material.emissiveColor = BABYLON.Color3.White();
+    // plane.material.emissiveColor = BABYLON.Color3.White();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
+    // plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
