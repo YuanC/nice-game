@@ -26,7 +26,7 @@ socket.on('playerCountChange', function (count) {
   // console.log('Player Count: ');
   // console.log(count);
   userCnt = count;
-  gui_usercount.text = userCnt + ' user(s) connected';
+  gui_usercount.text = userCnt + ' user(s) on island';
   
 })
 
@@ -37,7 +37,6 @@ socket.on('mapRefresh', function (place) { // sync with server state
 
   updateWeather();
   refreshMapObjects();
-  
 })
 
 // All the actions will be sent below to the server
