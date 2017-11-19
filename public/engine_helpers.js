@@ -100,24 +100,19 @@ function refreshMapObjects() {
         var currentPlant =  mapTemplate[row][col].plant;
 
         if(currentPlant != null) {
-          if (treeMatrix[row][col]) { // Change Material
-        
-            if (currentPlant['stage'] === 0) {
-
-              treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures['sprout'];
-              treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
-
-            } else if (currentPlant['stage'] >= 1) {
-
-              treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures[currentPlant['type']];
-              treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
-
-            }
-
-          } else {
+          if (!treeMatrix[row][col]) { // Change Material
             plant(col, row, currentPlant.type);
+          }
+          if (currentPlant['stage'] === 0) {
+
             treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures['sprout'];
             treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
+
+          } else if (currentPlant['stage'] >= 1) {
+
+            treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures[currentPlant['type']];
+            treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
+
           }
 
         } else if (treeMatrix[row][col]) { // delete plant
@@ -144,25 +139,19 @@ function refreshMapTile (pos, tile) {
 
     if(currentPlant != null) {
 
-      if (treeMatrix[row][col]) { // Change Material
-        
-        if (currentPlant['stage'] === 0) {
-
-          treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures['sprout'];
-          treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
-
-
-        } else if (currentPlant['stage'] >= 1) {
-
-          treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures[currentPlant['type']];
-          treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
-
-        }
-
-      } else {
+      if (!treeMatrix[row][col]) { // Change Material
         plant(col, row, currentPlant.type);
+      }
+      if (currentPlant['stage'] === 0) {
+
         treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures['sprout'];
         treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
+
+      } else if (currentPlant['stage'] >= 1) {
+
+        treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures[currentPlant['type']];
+        treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
+
       }
 
     } else if (treeMatrix[row][col]) { // delete plant
