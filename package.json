@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
+    "pixel-getter": "0.0.5",
     "request": "^2.83.0",
     "socket.io": "^2.0.4",
     "xmlhttprequest": "^1.8.0"

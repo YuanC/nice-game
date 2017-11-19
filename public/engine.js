@@ -257,7 +257,7 @@ function updateWeather () {
 
   if (data.precip && !raining) { // Raining
 
-    scene.clearColor = new BABYLON.Color3(0.1882, 0.0980, 0.2588);
+    scene.clearColor = new BABYLON.Color3(0.2588, 0.5608, 0.9569);
     rainParticleSystem.start();
     rainMusic.play();
     light.diffuse = new BABYLON.Color3(0.7, 0.7, 0.7);
