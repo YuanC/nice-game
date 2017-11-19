@@ -189,6 +189,7 @@ function renderGUI () {
   gui_placename.text = placeName.charAt(0).toUpperCase() + placeName.slice(1);
   gui_placename.color = "white";
   gui_placename.fontSize = 72;
+  gui_placename.paddingLeft = 4;
   gui_placename.fontFamily = "Arial";
   advancedTexture.addControl(gui_placename);
   gui_placename.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -208,7 +209,9 @@ function renderGUI () {
   gui_usercount = new BABYLON.GUI.TextBlock();
   gui_usercount.text = userCnt + ' user(s) connected';
   gui_usercount.color = "white";
-  gui_usercount.fontSize = 14;
+  gui_usercount.paddingRight = 8;
+  gui_usercount.paddingTop = 8;
+  gui_usercount.fontSize = 32;
   gui_usercount.fontFamily = "Arial";
   advancedTexture.addControl(gui_usercount);
   gui_usercount.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
@@ -257,7 +260,7 @@ function updateWeather () {
 
   if (data.precip && !raining) { // Raining
 
-    scene.clearColor = new BABYLON.Color3(0.1882, 0.0980, 0.2588);
+    scene.clearColor = new BABYLON.Color3(0.2588, 0.5608, 0.9569);
     rainParticleSystem.start();
     rainMusic.play();
     light.diffuse = new BABYLON.Color3(0.7, 0.7, 0.7);
