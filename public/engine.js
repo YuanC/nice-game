@@ -4,7 +4,7 @@ var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 10, light;
 var treeSize = 1.5;
 var flowerSize = 0.5;
-var shrubSize = 0.5;
+var shrubSize = 0.75;
 var rainParticleSystem, rainMusic;
 var treeMatrix, mapTemplate;
 var plantActionCd = 10000; // in milliseconds
@@ -164,6 +164,7 @@ var createScene = function () {
       gameGridZ = null;
       plantButton.isVisible = false;
       waterButton.isVisible = false;
+      plantPanel.isVisible = false;
     }
   }
 
