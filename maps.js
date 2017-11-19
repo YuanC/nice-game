@@ -109,10 +109,7 @@ exp.newPlant = (places, placeKey, plant, callback) => {
       }
       callback({'pos': plant.pos, 'tile': tile})
     } 
-
   }
-
-  
 }
 
 exp.waterPlant = (places, placeKey, pos, callback) => {
