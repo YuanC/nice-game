@@ -137,7 +137,7 @@ function refreshMapTile (pos, tile) {
 
   mapTemplate[row][col] = tile;
 
-  if(mapTemplate[row][col] != null 
+  if(mapTemplate[row][col] !== null 
     && mapTemplate[row][col].type === 'ground') {
 
     var currentPlant =  mapTemplate[row][col].plant;
@@ -358,14 +358,7 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
 
 function createShrub(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-<<<<<<< HEAD
-  var shrubMaterial = new BABYLON.StandardMaterial("shrub", scene);
-  shrubMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/bush.png", scene);
-  shrubMaterial.diffuseTexture.hasAlpha = true;
-  plane.material = shrubMaterial;
-=======
   plane.material =  new BABYLON.StandardMaterial("shrub", scene);
->>>>>>> origin/master
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   var objCoordX = getObjCoordX(gameGridX);  
   var objCoordZ = getObjCoordZ(gameGridZ);                        

@@ -227,10 +227,36 @@ var createScene = function () {
   // Buttons for player actions
   plantButton.onPointerDownObservable.add(function() {
     if(highlighted === true) {
+      var plantType = null;
       // Show plant panel
       plantPanel.isVisible = true;
-      var plantType = "tree";
-      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+      treeButton.onPointerDownObservable.add(function() {
+        plantType = "tree";
+        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+        plantPanel.isVisible = false;
+      });
+      flowerButton.onPointerDownObservable.add(function() {
+        plantType = "flower";
+        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+        plantPanel.isVisible = false;
+      });
+      shrubButton.onPointerDownObservable.add(function() {
+        plantType = "shrub";
+        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+        plantPanel.isVisible = false;
+      });
+    }
+  });
+
+  waterButton.onPointerDownObservable.add(function() {
+    if(highlighted === true) {
+      if(mapTemplate[gameGridZ][gameGridX] !== null) {
+        if(mapTemplate[gameGridZ][gameGridX].type === 'ground') {
+          if(plantType = mapTemplate[gameGridZ][gameGridX].plant !== null) {
+            socket.emit('waterPlant', [gameGridZ, gameGridX]);
+          }
+        }
+      }
     }
   });
 
@@ -301,6 +327,13 @@ function renderGUI () {
   flowerButton.color = "white";
   flowerButton.background = "green";
   plantPanel.addControl(flowerButton); 
+
+  shrubButton = BABYLON.GUI.Button.CreateSimpleButton("shrubButton", "Shrub");
+  shrubButton.width = 0.2;
+  shrubButton.height = "40px";
+  shrubButton.color = "white";
+  shrubButton.background = "green";
+  plantPanel.addControl(shrubButton); 
 
   waterButton = BABYLON.GUI.Button.CreateImageOnlyButton("waterButton", "public/textures/button_watering.png");
   waterButton.width = "100px";
