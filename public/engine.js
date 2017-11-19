@@ -151,7 +151,7 @@ var createScene = function () {
 
   // Need to determine coords first, all params necessary
   refreshMapObjects();
-  // spawnAnimal(scene, mapTemplate, numTilesWidth, numTilesHeight);
+  spawnAnimal(scene, mapTemplate);
   // Create cooldown for player actions
   var start = new Date();
   var highlightTile = null;
