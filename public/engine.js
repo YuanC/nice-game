@@ -104,7 +104,7 @@ var createScene = function () {
 
   // Create the multi material, set textures
   var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-  groundMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/ground.png", scene);
+  groundMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/grass.png", scene);
   // 
   var waterMaterial = new BABYLON.StandardMaterial("water", scene);
   waterMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/water.png", scene);
