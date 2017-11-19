@@ -22,6 +22,13 @@ var widthTotalDistance, heightTotalDistance;
 var tileWidth, tileHeight;
 var widthIsOdd, heightIsOdd;
 
+var plantMaterials = {
+  'sproutMaterial': null,
+  'treeMaterial': null,
+  'flowerMaterial': null,
+  'shrubMaterial': null
+};
+
 /*
 Please refer to engine_helpers.js for necessary function calls
 */
@@ -85,6 +92,8 @@ var createScene = function () {
       'h' : numTilesHeight, // corresponds to z axis
       'w' : numTilesWidth  // corresponds to x axis
   };
+
+  initPlantMaterials();
 
   // Create the Tiled Ground
   var tiledGround = new BABYLON.Mesh.CreateTiledGround("Tiled Ground", xmin, zmin, xmax, zmax, subdivisions, precision, scene);
