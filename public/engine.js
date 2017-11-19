@@ -403,7 +403,9 @@ function renderSprinkle () {
   sprinkleParticles.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   sprinkleParticles.emitter = sprinkleEmitter;
 
-  sprinkleParticles.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
+  sprinkleParticles.minEmitBox = new BABYLON.Vector3(-0.5, 0, -0.5);
+  sprinkleParticles.maxEmitBox = new BABYLON.Vector3(0.5, 0, 0.5);
+
   sprinkleParticles.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
   sprinkleParticles.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
   sprinkleParticles.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
@@ -418,8 +420,8 @@ function renderSprinkle () {
   sprinkleParticles.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
   sprinkleParticles.gravity = new BABYLON.Vector3(0, -20, 0);
-  sprinkleParticles.direction1 = new BABYLON.Vector3(-7, -8, 3);
-  sprinkleParticles.direction2 = new BABYLON.Vector3(7, -8, -3);
+  sprinkleParticles.direction1 = new BABYLON.Vector3(0, -1, 0);
+  sprinkleParticles.direction2 = new BABYLON.Vector3(0, -1, 0);
 
 }
 
