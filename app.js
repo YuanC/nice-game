@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
 
     maps.waterPlant(places, socket.location, pos, (data) => {
       io.sockets.in(socket.location).emit('tileChange', data)
+      io.sockets.in(socket.location).emit('sprinkle', data.pos)
     })
   })
 })

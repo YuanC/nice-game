@@ -22,6 +22,10 @@ socket.on('tileChange', function (data) { // update given tile
   refreshMapTile(data.pos, data.tile);
 })
 
+socket.on('sprinkle', function (pos) { // update given tile
+  sprinkle(getObjCoordZ(pos[1]), getObjCoordX(pos[0]));
+})
+
 socket.on('playerCountChange', function (count) {
   // console.log('Player Count: ');
   // console.log(count);
