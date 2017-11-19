@@ -1,19 +1,42 @@
 var animalCount = 0;
 var animal;
 
-function spawnAnimal(scene, mapTemplate, numTilesWidth, numTilesHeight) {
+function spawnAnimal(scene, mapTemplate) {
 	// only create one animal
 	while(animalCount < 1){
-		// get a random array index (spawn point)
-		var randomTile = getRandomTile(mapTemplate, numTilesWidth, numTilesHeight);
+		// get a random coordinate (spawnpoint)
+		var randomCoord = getRandomCoord();
+		console.log("random coord: ", randomCoord);
+
+		var xCoord = randomCoord.x;
+		console.log(xCoord);
+
+		var zCoord = randomCoord.z;
+		console.log(zCoord);
+
+		var gameGridX = getGameGridX(xCoord);
+		console.log(gameGridX);
+
+		var gameGridZ = getGameGridZ(zCoord);
+		console.log(gameGridZ);
+
+		var randomTile = mapTemplate[gameGridZ][gameGridX];
+		console.log("tile: ", randomTile);
+
 		// if the spawn point is a ground tile, spawn an animal
 		if (randomTile !== null && randomTile.type === 'ground'){
 			animal = new BABYLON.Mesh.CreateBox("animal", 1, scene);
+			console.log("I SPAWNED BOY");
 			// place the animal at the random tile
-			animal.position = new BABYLON.Vector3(randomTile, randomTile, 0);
+			// animal.position = new BABYLON.Vector3(xCoord, 0, zCoord);
 			animalCount++;
 		}
+		else {
+			console.log("Can't spawn here");
+		}
 	}
+	animal.position = new BABYLON.Vector3(getObjCoordX(getGameGridX(xCoord)), 0, getObjCoordZ(getGameGridZ(zCoord)));
+	console.log("placed at ", getObjCoordX(getGameGridX(xCoord)), getObjCoordZ(getGameGridZ(zCoord)));
 }
 
 // function createAnimal (mapTemplate, gameGridX, gameGridZ) {
@@ -23,11 +46,10 @@ function spawnAnimal(scene, mapTemplate, numTilesWidth, numTilesHeight) {
 // 	}
 // }
 
-function getRandomTile (mapTemplate, numTilesWidth, numTilesHeight) {
-	
-	var randomTile = mapTemplate[Math.floor((Math.random() * 30) + 1) % numTilesWidth][Math.floor((Math.random() * 30) + 1) % numTilesHeight];
-
-	return randomTile;
+// get a random x,z coordinate for tile
+function getRandomCoord () {
+	var randomCoord = new BABYLON.Vector3((Math.floor(Math.random() * 15)), 0, (Math.floor(Math.random() * 15)));
+	return randomCoord;
 }
 
 function walkPath (animal) {
