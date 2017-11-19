@@ -104,10 +104,11 @@ exp.newPlant = (places, placeKey, plant, callback) => {
 }
 
 exp.waterPlant = (places, placeKey, pos, callback) => {
-  
-  if (places[placeKey]['map'][pos[0]][pos[1]]['plant']['stage'] < 3) {
+  let tile = places[placeKey]['map'][pos[0]][pos[1]]
 
-    places[placeKey]['map'][pos[0]][pos[1]]['plant']['progress'] += water_change
+  if (tile['plant']['stage'] < 3) {
+
+    tile['plant']['progress'] += VALUES.water_change
 
     if (tile['plant']['progress'] >= 100) {
 
