@@ -47,10 +47,12 @@ socket.on('mapRefresh', function (place) { // sync with server state
 // For the sake of time (against good practise), cooldowns will be client-side
 
 function initSocket() {
+  if (placeName === "") {
+    placeName = 'london';
+  }
   console.log('Initialize connection');
   console.log(placeName);
   socket.emit('newPlayer', placeName);
-
 }
 
 window.addEventListener('DOMContentLoaded', initSocket);
