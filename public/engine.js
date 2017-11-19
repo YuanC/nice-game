@@ -162,6 +162,8 @@ var createScene = function () {
       highlighted = false;
       gameGridX = null;
       gameGridZ = null;
+      plantButton.isVisible = false;
+      waterButton.isVisible = false;
     }
   }
 
@@ -210,15 +212,15 @@ var createScene = function () {
         }
         else {
           // Water tile selected
-          clearHighlightTile()
+          clearHighlightTile();
         }            
       }
       else { // null tile selected
-        clearHighlightTile()
+        clearHighlightTile();
       }
     }
     else { // nothing hit
-      clearHighlightTile()
+      clearHighlightTile();
     }
   };
 
@@ -226,26 +228,24 @@ var createScene = function () {
 
   // Buttons for player actions
   plantButton.onPointerDownObservable.add(function() {
-    if(highlighted === true) {
-      var plantType = null;
-      // Show plant panel
-      plantPanel.isVisible = true;
-      treeButton.onPointerDownObservable.add(function() {
-        plantType = "tree";
-        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
-        plantPanel.isVisible = false;
-      });
-      flowerButton.onPointerDownObservable.add(function() {
-        plantType = "flower";
-        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
-        plantPanel.isVisible = false;
-      });
-      shrubButton.onPointerDownObservable.add(function() {
-        plantType = "shrub";
-        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
-        plantPanel.isVisible = false;
-      });
-    }
+    var plantType = null;
+    // Show plant panel
+    plantPanel.isVisible = true;
+    treeButton.onPointerDownObservable.add(function() {
+      plantType = "tree";
+      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+      plantPanel.isVisible = false;
+    });
+    flowerButton.onPointerDownObservable.add(function() {
+      plantType = "flower";
+      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+      plantPanel.isVisible = false;
+    });
+    shrubButton.onPointerDownObservable.add(function() {
+      plantType = "shrub";
+      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+      plantPanel.isVisible = false;
+    });
   });
 
   waterButton.onPointerDownObservable.add(function() {
@@ -308,6 +308,7 @@ function renderGUI () {
   plantButton.left = "-10%";
   plantButton.paddingBottom = "10px";
   plantButton.thickness = 0;
+  plantButton.isVisible = false;
   advancedTexture.addControl(plantButton);  
 
   plantPanel = new BABYLON.GUI.StackPanel();    
@@ -342,6 +343,7 @@ function renderGUI () {
   waterButton.left = "10%";
   waterButton.paddingBottom = "10px";
   waterButton.thickness = 0;
+  waterButton.isVisible = false;
   advancedTexture.addControl(waterButton);  
 }
 

@@ -442,5 +442,8 @@ function createHighlightTile(gameGridX, gameGridZ, scene) {
 
   highlighted = true;
 
+  plantButton.isVisible = true;
+  waterButton.isVisible = true;
+
   return highlightTile;
 }
