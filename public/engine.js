@@ -30,7 +30,7 @@ var highlightTile = null;
 var start = new Date().getTime();
 var elapsed;
 var fontFamily = "Century Gothic";
-var maxAnimalCount = 3;
+var maxAnimalCount = 5;
 
 // GUI Actions
 var activePlantButton, inactivePlantButton, cooldownPlantButton;
