@@ -10,6 +10,7 @@ var sprinkleEmitter, sprinkleParticles;
 var treeMatrix, mapTemplate;
 var plantActionCd = 5000; // in milliseconds
 var firstAction = true;
+var bgMusic;
 
 // Victor's variables
 var width = 15;
@@ -287,6 +288,9 @@ var createScene = function () {
   renderRain();
 
   renderSprinkle();
+
+  bgMusic = new BABYLON.Sound("RainMusic", "public/sounds/bg.mp3", scene, updateWeather, {'loop': true, 'autoplay': true, 'volume': 0.3});
+
 
   // Some Camera Effects
   // var parameters = {  };
