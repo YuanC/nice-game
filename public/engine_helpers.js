@@ -60,6 +60,23 @@ function getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight) {
   return objCoordZ;
 }
 
+
+function plant(col, row, type) {
+  if(type === 'tree') {
+    treeMatrix[row][col] = createTree(col, row, treeSize, scene);
+  }
+  else if(type === 'flower') {
+    treeMatrix[row][col] = createFlower(col, row, flowerSize, scene);
+  }
+  else if(type === 'shrub') {
+    treeMatrix[row][col] = createShrub(col, row, shrubSize, scene);
+  }
+  else {
+    // type does not exist
+    console.log("That plant type does not exist...")
+  }
+}
+
 function refreshMapObjects() {
   
   if (!treeMatrix) {
@@ -83,17 +100,20 @@ function refreshMapObjects() {
         var currentPlant =  mapTemplate[row][col].plant;
 
         if(currentPlant != null) {
-
           if (treeMatrix[row][col]) { // Update current plant mesh
             treeMatrix[row][col].dispose();
+            if(treeMatrix[row][col].progressBar !== null) {
+              treeMatrix[row][col].progressBar.dispose();
+            }
           }
-          
-          // var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
-          // var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
-          treeMatrix[row][col] = createTree(col, row, treeSize, scene);
+
+          plant(col, row, currentPlant.type);
 
         } else if (treeMatrix[row][col]) { // delete plant
           treeMatrix[row][col].dispose();
+          if(treeMatrix[row][col].progressBar !== null) {
+            treeMatrix[row][col].progressBar.dispose();
+          }
         }
       }
     }
@@ -115,14 +135,18 @@ function refreshMapTile (pos, tile) {
 
       if (treeMatrix[row][col]) { // Update current plant mesh
         treeMatrix[row][col].dispose();
+        if (treeMatrix[row][col].progressBar !== null) {
+          treeMatrix[row][col].progressBar.dispose();
+        }
       }
-      
-      // var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
-      // var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
-      treeMatrix[row][col] = createTree(col, row, treeSize, scene);
+
+      plant(col, row, currentPlant.type);
 
     } else if (treeMatrix[row][col]) { // delete plant
       treeMatrix[row][col].dispose();
+      if(treeMatrix[row][col].progressBar !== null) {
+        treeMatrix[row][col].progressBar.dispose();
+      }
     }
   }
 }
@@ -227,9 +251,9 @@ function getGameGridZ(z, heightIsOdd, tileHeight, subdivisions) {
 function createTree(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
   var treeMaterial = new BABYLON.StandardMaterial("tree", scene);
-  treeMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  treeMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  treeMaterial.emissiveColor = BABYLON.Color3.Green();
+  treeMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/tree.png", scene);
+  treeMaterial.diffuseTexture.hasAlpha = true;
+  treeMaterial.emissiveColor = BABYLON.Color3.White();
   plane.material = treeMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
@@ -243,17 +267,96 @@ function createTree(gameGridX, gameGridZ, size, scene) {
 
   plane.actionManager = new BABYLON.ActionManager(scene);
   
-  var progressBar;
+  var progressBar = null;
+  plane.progressBar = progressBar;
+  
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    plane.material.emissiveColor = BABYLON.Color3.Blue();
+    plane.material.emissiveColor = BABYLON.Color3.Black();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
+    plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    plane.material.emissiveColor = BABYLON.Color3.Green();
-    progressBar.dispose();
+    plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.progressBar.dispose();
+  }));
+
+  return plane;
+}
+
+function createFlower(gameGridX, gameGridZ, size, scene) {
+  var plane = BABYLON.Mesh.CreatePlane("", size, scene);
+  var flowerMaterial = new BABYLON.StandardMaterial("flower", scene);
+  flowerMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/flower.png", scene);
+  flowerMaterial.diffuseTexture.hasAlpha = true;
+  flowerMaterial.emissiveColor = BABYLON.Color3.White();
+  plane.material = flowerMaterial;
+  plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+  // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
+  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
+  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                        
+  plane.position.x = objCoordX;
+  plane.position.z = objCoordZ;
+  plane.position.y = size / 2;
+
+  plane.isPickable = true; 
+
+  plane.actionManager = new BABYLON.ActionManager(scene);
+  
+  var progressBar = null;
+  plane.progressBar = progressBar;
+  
+  //ON MOUSE ENTER
+  plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
+    plane.material.emissiveColor = BABYLON.Color3.Black();
+    progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
+    plane.progressBar = progressBar;
+  }));
+  
+  //ON MOUSE EXIT
+  plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
+    plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.progressBar.dispose();
+  }));
+
+  return plane;
+}
+
+function createShrub(gameGridX, gameGridZ, size, scene) {
+  var plane = BABYLON.Mesh.CreatePlane("", size, scene);
+  var shrubMaterial = new BABYLON.StandardMaterial("shrub", scene);
+  shrubMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+  shrubMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+  shrubMaterial.emissiveColor = BABYLON.Color3.White();
+  plane.material = shrubMaterial;
+  plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+  // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
+  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
+  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                        
+  plane.position.x = objCoordX;
+  plane.position.z = objCoordZ;
+  plane.position.y = size / 2;
+
+  plane.isPickable = true; 
+
+  plane.actionManager = new BABYLON.ActionManager(scene);
+  
+  var progressBar = null;
+  plane.progressBar = progressBar;
+  
+  //ON MOUSE ENTER
+  plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
+    plane.material.emissiveColor = BABYLON.Color3.Black();
+    progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
+    plane.progressBar = progressBar;
+  }));
+  
+  //ON MOUSE EXIT
+  plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
+    plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.progressBar.dispose();
   }));
 
   return plane;
