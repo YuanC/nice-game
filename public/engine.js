@@ -21,6 +21,7 @@ var subdivisions;
 var widthTotalDistance, heightTotalDistance;
 var tileWidth, tileHeight;
 var widthIsOdd, heightIsOdd;
+var lights;
 
 /*
 Please refer to engine_helpers.js for necessary function calls
@@ -49,7 +50,7 @@ var createScene = function () {
   camera.attachControl(canvas, true);
 
   // Add a light
-  var lights = [];
+  lights = [];
   light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 0.5, 1), scene);
   light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, 0.5, -1), scene);
   lights.push(light1);
@@ -141,7 +142,7 @@ var createScene = function () {
 
   // Create cooldown for player actions
   var start = new Date();
-
+  var highlightTile = null;
   //When pointer down event is raised
   scene.onPointerDown = function (evt, pickResult) {
     // Get time in ms
@@ -167,9 +168,30 @@ var createScene = function () {
         console.log("Player selected this tile: " + currentType);    
         if(currentType === 'ground') {
           // Highlight picked tile
-          var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-          var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);
+          function createHighlightTile(gameGridX, gameGridZ, scene) {
+            var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
+            var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);
 
+            var highlightTile = BABYLON.MeshBuilder.CreateGround("highlightTile", {width: tileWidth, height: tileHeight, subdivsions: 1}, scene);
+            var highlightMaterial = new BABYLON.StandardMaterial("highlight", scene);
+            highlightMaterial.emissiveColor = new BABYLON.Color3.White();
+            highlightMaterial.alpha = 0.2;
+            highlightTile.material = highlightMaterial;
+            highlightTile.position.x = objCoordX;
+            highlightTile.position.z = objCoordZ;
+            highlightTile.position.y = 0.1; // slightly above ground
+            highlightTile.isPickable = true; 
+
+            return highlightTile;
+          }
+
+          if(highlightTile !== null) {
+            highlightTile.dispose();
+            highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
+          }
+          else {
+            highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
+          }
 
           var currentPlant =  mapTemplate[gameGridZ][gameGridX].plant;
           if(currentPlant !== null) {
@@ -272,15 +294,17 @@ function updateWeather () {
     scene.clearColor = new BABYLON.Color3(0.2588, 0.5608, 0.9569);
     rainParticleSystem.start();
     rainMusic.play();
-    light.diffuse = new BABYLON.Color3(0.7, 0.7, 0.7);
-
+    for(var i = 0; i < lights.length; i++) {
+      lights[i].diffuse = new BABYLON.Color3(0.7, 0.7, 0.7);
+    }
   } else if (!data.precip && raining) { // Dry
 
     scene.clearColor = new BABYLON.Color3(0.4078, 0.8235, 0.9098);
     rainMusic.stop();
     rainParticleSystem.stop();
-    light.diffuse = new BABYLON.Color3(1, 1, 1);
-
+    for(var i = 0; i < lights.length; i++) {
+      lights[i].diffuse = new BABYLON.Color3(1, 1, 1);
+    }
   }
 
   raining = data.precip;
