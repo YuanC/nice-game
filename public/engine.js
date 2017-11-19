@@ -22,6 +22,14 @@ var widthTotalDistance, heightTotalDistance;
 var tileWidth, tileHeight;
 var widthIsOdd, heightIsOdd;
 var lights;
+var highlighted = false;
+var gameGridX = null;
+var gameGridZ = null;
+
+// GUI Actions
+var plantButton, waterButton;
+var plantPanel;
+var treeButton, flowerButton, shrubButton;
 
 var plantMaterials = {
   'sproutMaterial': null,
@@ -152,6 +160,16 @@ var createScene = function () {
   // Create cooldown for player actions
   var start = new Date();
   var highlightTile = null;
+
+  function clearHighlightTile() {
+    if(highlightTile !== null) {
+      highlightTile.dispose();
+      highlighted = false;
+      gameGridX = null;
+      gameGridZ = null;
+    }
+  }
+
   //When pointer down event is raised
   scene.onPointerDown = function (evt, pickResult) {
     // Get time in ms
@@ -167,8 +185,8 @@ var createScene = function () {
       z = pickResult.pickedPoint.z;
       console.log("World coords: (" + x + ", " + z + ")");
       // Begin converting to game grid
-      var gameGridX = getGameGridX(x);
-      var gameGridZ = getGameGridZ(z);
+      gameGridX = getGameGridX(x);
+      gameGridZ = getGameGridZ(z);
       
       console.log("Mapped game grid to array coords: (" + gameGridX + ", " + gameGridZ + ")");
 
@@ -192,14 +210,35 @@ var createScene = function () {
           else {
             // Can make new plant
             // Need to update server array
-            socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': 'tree'});
+            // socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': 'tree'});
           }
+        }
+        else {
+          // Water tile selected
+          clearHighlightTile()
         }            
       }
+      else { // null tile selected
+        clearHighlightTile()
+      }
+    }
+    else { // nothing hit
+      clearHighlightTile()
     }
   };
 
   renderGUI();
+
+  // Buttons for player actions
+  plantButton.onPointerDownObservable.add(function() {
+    if(highlighted === true) {
+      // Show plant panel
+      plantPanel.isVisible = true;
+      var plantType = "tree";
+      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+    }
+  });
+
   renderRain();
 
   return scene;
@@ -239,7 +278,45 @@ function renderGUI () {
   advancedTexture.addControl(gui_usercount);
   gui_usercount.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
   gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+  // Planting 
+  plantButton = BABYLON.GUI.Button.CreateImageOnlyButton("plantButton", "public/textures/button_planting.png");
+  plantButton.width = "100px";
+  plantButton.height = "110px";
+  plantButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  plantButton.left = "-10%";
+  plantButton.paddingBottom = "10px";
+  plantButton.thickness = 0;
+  advancedTexture.addControl(plantButton);  
+
+  plantPanel = new BABYLON.GUI.StackPanel();    
+  advancedTexture.addControl(plantPanel);   
+  plantPanel.isVisible = false;
+
+  treeButton = BABYLON.GUI.Button.CreateSimpleButton("treeButton", "Tree");
+  treeButton.width = 0.2;
+  treeButton.height = "40px";
+  treeButton.color = "white";
+  treeButton.background = "green";
+  plantPanel.addControl(treeButton);     
+
+  flowerButton = BABYLON.GUI.Button.CreateSimpleButton("flowerButton", "Flower");
+  flowerButton.width = 0.2;
+  flowerButton.height = "40px";
+  flowerButton.color = "white";
+  flowerButton.background = "green";
+  plantPanel.addControl(flowerButton); 
+
+  waterButton = BABYLON.GUI.Button.CreateImageOnlyButton("waterButton", "public/textures/button_watering.png");
+  waterButton.width = "100px";
+  waterButton.height = "110px";
+  waterButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  waterButton.left = "10%";
+  waterButton.paddingBottom = "10px";
+  waterButton.thickness = 0;
+  advancedTexture.addControl(waterButton);  
 }
+
 
 function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
