@@ -6,6 +6,7 @@ var treeSize = 1.5;
 var flowerSize = 0.5;
 var shrubSize = 0.75;
 var rainParticleSystem, rainMusic;
+var sprinkleEmitter, sprinkleParticles;
 var treeMatrix, mapTemplate;
 var plantActionCd = 5000; // in milliseconds
 var firstAction = true;
@@ -269,6 +270,7 @@ var createScene = function () {
             socket.emit('waterPlant', [gameGridZ, gameGridX]);
             resetActiveButtons();
             displayCd();
+            sprinkle(getObjCoordX(gameGridX), getObjCoordZ(gameGridZ));
           }
         }
       }
@@ -276,6 +278,12 @@ var createScene = function () {
   });
 
   renderRain();
+
+  renderSprinkle();
+
+  // Some Camera Effects
+  // var parameters = {  };
+  // var lensEffect = new BABYLON.LensRenderingPipeline('lensEffects', parameters, scene, 1.0, camera);
 
   return scene;
 }
@@ -389,13 +397,13 @@ function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
   rainEmitter.position.y = 10;
 
-  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1000, scene);
+  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1500, scene);
 
   rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   rainParticleSystem.emitter = rainEmitter;
 
-  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-10, 0, -10); // Starting all From
-  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(10, 0, 10); // To...
+  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-20, 0, -20); // Starting all From
+  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(20, 0, 20); // To...
 
   rainParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
   rainParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
@@ -404,8 +412,8 @@ function renderRain () {
   rainParticleSystem.minSize = 0.1;
   rainParticleSystem.maxSize = 0.2;
 
-  rainParticleSystem.minLifeTime = 0.2;
-  rainParticleSystem.maxLifeTime = 0.3;
+  rainParticleSystem.minLifeTime = 0.05;
+  rainParticleSystem.maxLifeTime = 0.1;
 
   rainParticleSystem.emitRate = 1500;
 
@@ -421,6 +429,45 @@ function renderRain () {
 
   // Begins updateWeather
   rainMusic = new BABYLON.Sound("RainMusic", "public/sounds/rain.mp3", scene, updateWeather, {'loop': true});
+}
+
+function renderSprinkle () {
+  sprinkleEmitter = BABYLON.Mesh.CreateBox("sprinkleEmitter", 0.01, scene);
+  sprinkleEmitter.position.y = 2;
+  sprinkleParticles = new BABYLON.ParticleSystem("sprinkle", 50, scene);
+
+  sprinkleParticles.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
+  sprinkleParticles.emitter = sprinkleEmitter;
+
+  sprinkleParticles.minEmitBox = new BABYLON.Vector3(-0.5, 0, -0.5);
+  sprinkleParticles.maxEmitBox = new BABYLON.Vector3(0.5, 0, 0.5);
+
+  sprinkleParticles.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+  sprinkleParticles.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+  sprinkleParticles.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+  sprinkleParticles.minSize = 0.3;
+  sprinkleParticles.maxSize = 0.5;
+
+  sprinkleParticles.minLifeTime = 0.2;
+  sprinkleParticles.maxLifeTime = 0.3;
+
+  sprinkleParticles.emitRate = 50;
+  sprinkleParticles.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+  sprinkleParticles.gravity = new BABYLON.Vector3(0, -20, 0);
+  sprinkleParticles.direction1 = new BABYLON.Vector3(0, -1, 0);
+  sprinkleParticles.direction2 = new BABYLON.Vector3(0, -1, 0);
+
+}
+
+function sprinkle (x, z) {
+  sprinkleEmitter.position.x = x;
+  sprinkleEmitter.position.z = z;
+
+  sprinkleParticles.start();
+  setTimeout(function () { sprinkleParticles.stop(); }, 1000);
+
 }
 
 function updateWeather () {
