@@ -29,6 +29,7 @@ var gameGridZ = null;
 var highlightTile = null;
 var start = new Date().getTime();
 var elapsed;
+var fontFamily = "Century Gothic";
 
 // GUI Actions
 var activePlantButton, inactivePlantButton, cooldownPlantButton;
@@ -298,7 +299,7 @@ function renderGUI () {
   gui_placename.color = "white";
   gui_placename.fontSize = 72;
   gui_placename.paddingLeft = 4;
-  gui_placename.fontFamily = "Century Gothic";
+  gui_placename.fontFamily = fontFamily;
   advancedTexture.addControl(gui_placename);
   gui_placename.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
   gui_placename.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -309,7 +310,7 @@ function renderGUI () {
   gui_weather.fontSize = 26;
   gui_weather.paddingTop = 72;
   gui_weather.paddingLeft = 8;
-  gui_weather.fontFamily = "Century Gothic";
+  gui_weather.fontFamily = fontFamily;
   advancedTexture.addControl(gui_weather);
   gui_weather.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
   gui_weather.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -320,7 +321,7 @@ function renderGUI () {
   gui_usercount.paddingRight = 8;
   gui_usercount.paddingTop = 8;
   gui_usercount.fontSize = 32;
-  gui_usercount.fontFamily = "Century Gothic";
+  gui_usercount.fontFamily = fontFamily;
   advancedTexture.addControl(gui_usercount);
   gui_usercount.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
   gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
