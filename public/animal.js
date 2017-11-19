@@ -1,5 +1,6 @@
 var animalCount = 0;
 var animal;
+var animalSprite;
 
 function spawnAnimal(scene, mapTemplate) {
 	// only create one animal
@@ -26,6 +27,17 @@ function spawnAnimal(scene, mapTemplate) {
 		// if the spawn point is a ground tile, spawn an animal
 		if (randomTile !== null && randomTile.type === 'ground'){
 			animal = new BABYLON.Mesh.CreateBox("animal", 1, scene);
+			// animal = new BABYLON.Mesh.CreatePlane("animal", 0, scene);
+
+			animal.material = new BABYLON.StandardMaterial("animal", scene);
+			animal.material.alpha = 0;
+			animalSprite = new BABYLON.Mesh.CreatePlane("animalSprite", 0, scene);
+			animalSprite.material = new BABYLON.StandardMaterial("animalSprite", scene);
+
+			animalSprite.material.diffuseTexture = new BABYLON.Texture("public/textures/rightdeer.png", scene);
+			animalSprite.material.diffuseTexture.hasAlpha = true;
+
+			animalSprite.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 			console.log("I SPAWNED BOY");
 			// place the animal at the random tile
 			// animal.position = new BABYLON.Vector3(xCoord, 0, zCoord);
@@ -33,8 +45,9 @@ function spawnAnimal(scene, mapTemplate) {
 		}
 	}
 	//initial position
-	animal.position = new BABYLON.Vector3(getObjCoordX(getGameGridX(xCoord)), 0, getObjCoordZ(getGameGridZ(zCoord)));
-	
+	animal.position = new BABYLON.Vector3(getObjCoordX(getGameGridX(xCoord)), 0.4, getObjCoordZ(getGameGridZ(zCoord)));
+	animalSprite.position = animal.position;
+
 	var currentX = animal.position.x;
 
 	var currentZ = animal.position.z;
@@ -91,7 +104,7 @@ function spawnAnimal(scene, mapTemplate) {
  			}
  			
 
- 			console.log("look i changed direction lol", direction);
+ 			// console.log("look i changed direction lol", direction);
  		}
  		if(i === count){
  			count = Math.floor((Math.random() * (200-100)) + 100);
@@ -99,6 +112,7 @@ function spawnAnimal(scene, mapTemplate) {
  			direction = (Math.floor(Math.random() * 4 + 1)) % 4;
 
  		}
+ 		animalSprite.position = animal.position;
    //  	else{
 			// animal.locallyTranslate(new BABYLON.Vector3(Math.random() * 0.02 * -1, 0, Math.random()* 0.02 * -1));
 			// currentX = animal.position.x;
@@ -110,6 +124,8 @@ function spawnAnimal(scene, mapTemplate) {
 	// var animalTile = mapTemplate[animal.position.z][animal.position.x];
 	// console.log(animalTile);
 }
+
+setInterval(function(){console.log(animal.position)}, 200);
 
 // function createAnimal (mapTemplate, gameGridX, gameGridZ) {
 // 	//only spawn an animal on the ground and if there isn't one on the screen already
