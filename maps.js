@@ -95,8 +95,11 @@ function updateTile (tile, precip) {
 
 exp.newPlant = (places, placeKey, plant, callback) => {
 
-  if (plant && plant.pos && plant.pos.length === 2 && plant.type) {
-    tile = places[placeKey]['map'][plant.pos[0]][plant.pos[1]]
+  if (plant && plant.pos && plant.pos.length === 2 && plant.type
+    && places && placeKey in places && places[placeKey]) {
+
+    let tile = places[placeKey]['map'][plant.pos[0]][plant.pos[1]]
+    
     if (!tile['plant']) {
       console.log(tile)
       tile['plant']  = { 
