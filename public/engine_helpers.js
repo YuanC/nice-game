@@ -285,7 +285,7 @@ function createTree(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    // plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.material.emissiveColor = BABYLON.Color3.White();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
@@ -293,7 +293,7 @@ function createTree(gameGridX, gameGridZ, size, scene) {
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
     // Get rid of color
-    // plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
+    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -302,7 +302,10 @@ function createTree(gameGridX, gameGridZ, size, scene) {
 
 function createFlower(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-  plane.material = plantMaterials['flowerMaterial'];
+  var flowerMaterial = new BABYLON.StandardMaterial("flower", scene);
+  flowerMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/flower.png", scene);
+  flowerMaterial.diffuseTexture.hasAlpha = true;
+  plane.material = flowerMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   var objCoordX = getObjCoordX(gameGridX);
   var objCoordZ = getObjCoordZ(gameGridZ);                        
@@ -319,14 +322,14 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    // plane.material.emissiveColor = BABYLON.Color3.Black();
+    plane.material.emissiveColor = BABYLON.Color3.Black();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    // plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
+    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -335,7 +338,10 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
 
 function createShrub(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-  plane.material = plantMaterials['shrubMaterial'];
+  var shrubMaterial = new BABYLON.StandardMaterial("shrub", scene);
+  shrubMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/bush.png", scene);
+  shrubMaterial.diffuseTexture.hasAlpha = true;
+  plane.material = shrubMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   var objCoordX = getObjCoordX(gameGridX);
   var objCoordZ = getObjCoordZ(gameGridZ);                        
@@ -352,14 +358,14 @@ function createShrub(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    // plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.material.emissiveColor = BABYLON.Color3.White();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    // plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
+    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -416,6 +422,8 @@ function createHighlightTile(gameGridX, gameGridZ, scene) {
   highlightTile.position.z = objCoordZ;
   highlightTile.position.y = 0.1; // slightly above ground
   highlightTile.isPickable = true; 
+
+  highlighted = true;
 
   return highlightTile;
 }
