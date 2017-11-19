@@ -2,7 +2,7 @@
 var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 10, light;
-var treeSize = 1;
+var treeSize = 1.5;
 var flowerSize = 0.5;
 var shrubSize = 0.5;
 var rainParticleSystem, rainMusic;

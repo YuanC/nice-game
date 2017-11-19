@@ -107,7 +107,7 @@ function refreshMapObjects() {
               treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures['sprout'];
               treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
 
-            } else if (currentPlant['stage'] === 1) {
+            } else if (currentPlant['stage'] >= 1) {
 
               treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures[currentPlant['type']];
               treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
@@ -152,7 +152,7 @@ function refreshMapTile (pos, tile) {
           treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
 
 
-        } else if (currentPlant['stage'] === 1) {
+        } else if (currentPlant['stage'] >= 1) {
 
           treeMatrix[row][col]['material']['diffuseTexture'] = plantTextures[currentPlant['type']];
           treeMatrix[row][col]['material']['diffuseTexture']['hasAlpha'] = true;
@@ -416,9 +416,10 @@ function showProgress(gameGridX, gameGridZ, size, scene) {
   var font = "bold 70px Segoe UI";
   var invertY = true;
   var progress = mapTemplate[gameGridZ][gameGridX].plant.progress;
-  var text = progress + '%';
+  var stage = mapTemplate[gameGridZ][gameGridX].plant.stage;
+  var text = stage + ", " + progress + '%';
   var color = "white"
-  var x = 50;
+  var x = 10;
   var y = 100;
   
   progressTexture.drawText(text, x, y, font, color, "transparent");
