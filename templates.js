@@ -17,17 +17,11 @@ exp.getPlaces = () => {
       'precip': false,
       'weather_api_id': 'CAON0383'
     },
-    'taipei': {  
+    'halifax': {  
       'playerCount': 0,
       'map': null,
       'precip': false,
-      'weather_api_id': 'TWXX0021'
-    },
-    'toronto': {
-      'playerCount': 0,
-      'map': null,
-      'precip': false,
-      'weather_api_id': 'CAON0696'
+      'weather_api_id': 'CANS0057'
     },
     'losangeles': {
       'playerCount': 0,
