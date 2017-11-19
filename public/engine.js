@@ -336,6 +336,7 @@ function renderGUI () {
   logo.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
   logo.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
   logo.height = "100px";
+  logo.paddingTop = "10px";
   advancedTexture.addControl(logo); 
 
   // Planting 
