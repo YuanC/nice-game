@@ -30,6 +30,7 @@ var highlightTile = null;
 var start = new Date().getTime();
 var elapsed;
 var fontFamily = "Century Gothic";
+var maxAnimalCount = 3;
 
 // GUI Actions
 var activePlantButton, inactivePlantButton, cooldownPlantButton;
@@ -157,7 +158,11 @@ var createScene = function () {
 
   // Need to determine coords first, all params necessary
   refreshMapObjects();
-  spawnAnimal(scene, mapTemplate);
+
+  // Make some deer
+  for(var i = 0; i < maxAnimalCount; i++) {
+    var newAnimal = spawnAnimal(mapTemplate, scene);
+  }
   
   //When pointer down event is raised
   scene.onPointerDown = function (evt, pickResult) {
