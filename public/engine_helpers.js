@@ -304,10 +304,7 @@ function createTree(gameGridX, gameGridZ, size, scene) {
 
 function createFlower(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-  var flowerMaterial = new BABYLON.StandardMaterial("flower", scene);
-  flowerMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/flower.png", scene);
-  flowerMaterial.diffuseTexture.hasAlpha = true;
-  plane.material = flowerMaterial;
+  plane.material = plantMaterials['flowerMaterial'];
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
   var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
@@ -340,11 +337,8 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
 }
 
 function createShrub(gameGridX, gameGridZ, size, scene) {
-  var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-  var shrubMaterial = new BABYLON.StandardMaterial("shrub", scene);
-  shrubMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  shrubMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  plane.material = shrubMaterial;
+  var plane = BABYLON.Mesh.CreatePlane("", size, scene);\
+  plane.material = plantMaterials['shrubMaterial'];
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
   var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
