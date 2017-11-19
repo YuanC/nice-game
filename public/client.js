@@ -1,12 +1,13 @@
 var socket = io.connect();
 var placeName = window.location.pathname.toLowerCase().substring(1);
 
-var data, userCnt;
+var data, userCnt, raining;
 
 socket.on('connectSuccess', function (succ) {
   data = succ;
   console.log(succ);
   userCnt = data.playerCount;
+  raining = !data.precip;
   startBabylon();
 })
 
@@ -34,6 +35,7 @@ socket.on('mapRefresh', function (place) { // sync with server state
   console.log(place);
   mapTemplate = place['map'];
 
+  updateWeather();
   refreshMapObjects();
   
 })

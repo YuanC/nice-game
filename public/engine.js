@@ -3,6 +3,7 @@ var canvas, engine, scene;
 var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 10, light;
 var treeSize = 1;
+var rainParticleSystem, rainMusic;
 var treeMatrix, mapTemplate;
 var plantActionCd = 10000; // in milliseconds
 var firstAction = true;
@@ -214,7 +215,7 @@ function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
   rainEmitter.position.y = 10;
 
-  var rainParticleSystem = new BABYLON.ParticleSystem("rain", 1000, scene);
+  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1000, scene);
 
   rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   rainParticleSystem.emitter = rainEmitter;
@@ -244,14 +245,29 @@ function renderRain () {
   rainParticleSystem.maxEmitPower = 10;
   rainParticleSystem.updateSpeed = 0.005;
 
-  rainParticleSystem.start();
+  // Begins updateWeather
+  rainMusic = new BABYLON.Sound("RainMusic", "public/sounds/rain.mp3", scene, updateWeather, {'loop': true});
 }
 
-function updateScene (data) {
+function updateWeather () {
 
-  rainParticleSystem.start();
+  if (data.precip && !raining) { // Raining
 
-  // socket.emit('plantSeed', data)
+    scene.clearColor = new BABYLON.Color3(0.1882, 0.0980, 0.2588);
+    rainParticleSystem.start();
+    rainMusic.play();
+    light.diffuse = new BABYLON.Color3(0.7, 0.7, 0.7);
+
+  } else if (!data.precip && raining) { // Dry
+
+    scene.clearColor = new BABYLON.Color3(0.4078, 0.8235, 0.9098);
+    rainMusic.stop();
+    rainParticleSystem.stop();
+    light.diffuse = new BABYLON.Color3(0.5, 0.5, 0.5);
+
+  }
+
+  raining = data.precip;
 }
 
 function startBabylon () {
