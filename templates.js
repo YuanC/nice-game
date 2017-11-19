@@ -23,6 +23,12 @@ exp.getPlaces = () => {
       'precip': false,
       'weather_api_id': 'CANS0057'
     },
+    'vancouver': {  
+      'playerCount': 0,
+      'map': null,
+      'precip': false,
+      'weather_api_id': 'CABC0308'
+    },
     'losangeles': {
       'playerCount': 0,
       'map': null,
