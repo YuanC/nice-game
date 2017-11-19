@@ -1,6 +1,7 @@
+var animalCount = 0;
+var animal;
+
 function spawnAnimal(scene, mapTemplate, numTilesWidth, numTilesHeight) {
-	var animalCount = 0;
-	var animal;
 	// only create one animal
 	while(animalCount < 1){
 		// get a random array index (spawn point)
@@ -8,6 +9,8 @@ function spawnAnimal(scene, mapTemplate, numTilesWidth, numTilesHeight) {
 		// if the spawn point is a ground tile, spawn an animal
 		if (randomTile !== null && randomTile.type === 'ground'){
 			animal = new BABYLON.Mesh.CreateBox("animal", 1, scene);
+			// place the animal at the random tile
+			animal.position = new BABYLON.Vector3(randomTile, randomTile, 0);
 			animalCount++;
 		}
 	}
@@ -27,6 +30,10 @@ function getRandomTile (mapTemplate, numTilesWidth, numTilesHeight) {
 	return randomTile;
 }
 
-// function moveAnimal(dest, animal) {
-// 	if(animal)
-// }
+function walkPath (animal) {
+	var destination = getRandomTile(mapTemplate, numTilesWidth, numTilesHeight);
+	if (animal != null && destination.type === 'ground'){
+
+	}
+}
+

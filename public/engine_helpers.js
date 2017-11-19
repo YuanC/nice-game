@@ -33,7 +33,7 @@ function generateMapTiles(tiledGround, mapTemplate, subdivisions) {
 // Helper functions to get world coords from game grid coords
 // Start at first tile (0,0), get midpoint of side lengths 
 // Have to account for odd/even
-function getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth) {
+function getObjCoordX(gameGridX) {
   var objCoordX = 0;
   if(widthIsOdd === true) {
     // Map to 0
@@ -47,7 +47,7 @@ function getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth) {
   return objCoordX;
 }
 
-function getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight) {
+function getObjCoordZ(gameGridZ) {
   var objCoordZ = 0;
   if(heightIsOdd === true) {
     objCoordZ -= (tileHeight * Math.floor(numTilesHeight / 2));
@@ -152,7 +152,7 @@ function refreshMapTile (pos, tile) {
 }
 
 // Map to array indices
-function getGameGridX(x, widthIsOdd, tileWidth, subdivisions) {
+function getGameGridX(x) {
   var gameGridX = 0;
   if(widthIsOdd === true) {
     if(x >= 0) { // x is positive
@@ -200,7 +200,7 @@ function getGameGridX(x, widthIsOdd, tileWidth, subdivisions) {
   }
   return Math.abs(gameGridX);
 }
-function getGameGridZ(z, heightIsOdd, tileHeight, subdivisions) {
+function getGameGridZ(z) {
   var gameGridZ = 0;
   if(heightIsOdd === true) {
     if(z >= 0) { // z is positive
@@ -258,8 +258,8 @@ function initPlantMaterials () {
   plantMaterials['treeMaterial'].diffuseTexture.hasAlpha = true;
 
   plantMaterials['shrubMaterial'] = new BABYLON.StandardMaterial("shrub", scene);
-  plantMaterials['shrubMaterial'].diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  plantMaterials['shrubMaterial'].specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+  plantMaterials['shrubMaterial'].diffuseTexture = new BABYLON.Texture("./public/textures/bush.png", scene);
+  plantMaterials['shrubMaterial'].diffuseTexture.hasAlpha = true;
 
   plantMaterials['sproutMaterial'] = new BABYLON.StandardMaterial("sprout", scene);
   plantMaterials['sproutMaterial'].diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
@@ -268,12 +268,10 @@ function initPlantMaterials () {
 
 function createTree(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-  // var treeMaterial = plantMaterials['treeMaterial'];
   plane.material = plantMaterials['treeMaterial'];
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-  // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
-  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                        
+  var objCoordX = getObjCoordX(gameGridX);
+  var objCoordZ = getObjCoordZ(gameGridZ);                        
   plane.position.x = objCoordX;
   plane.position.z = objCoordZ;
   plane.position.y = size / 2;
@@ -306,9 +304,8 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
   plane.material = plantMaterials['flowerMaterial'];
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-  // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
-  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                        
+  var objCoordX = getObjCoordX(gameGridX);
+  var objCoordZ = getObjCoordZ(gameGridZ);                        
   plane.position.x = objCoordX;
   plane.position.z = objCoordZ;
   plane.position.y = size / 2;
@@ -337,12 +334,11 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
 }
 
 function createShrub(gameGridX, gameGridZ, size, scene) {
-  var plane = BABYLON.Mesh.CreatePlane("", size, scene);\
+  var plane = BABYLON.Mesh.CreatePlane("", size, scene);
   plane.material = plantMaterials['shrubMaterial'];
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-  // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
-  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                        
+  var objCoordX = getObjCoordX(gameGridX);
+  var objCoordZ = getObjCoordZ(gameGridZ);                        
   plane.position.x = objCoordX;
   plane.position.z = objCoordZ;
   plane.position.y = size / 2;
@@ -387,8 +383,8 @@ function showProgress(gameGridX, gameGridZ, size, scene) {
   progressBar.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 
   // Set coordinates
-  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                       
+  var objCoordX = getObjCoordX(gameGridX);
+  var objCoordZ = getObjCoordZ(gameGridZ);                       
   progressBar.position.x = objCoordX;
   progressBar.position.z = objCoordZ;
   progressBar.position.y = size * 1.5;
@@ -405,4 +401,21 @@ function showProgress(gameGridX, gameGridZ, size, scene) {
   progressTexture.drawText(text, x, y, font, color, "transparent");
 
   return progressBar;
+}
+
+function createHighlightTile(gameGridX, gameGridZ, scene) {
+  var objCoordX = getObjCoordX(gameGridX);
+  var objCoordZ = getObjCoordZ(gameGridZ);
+
+  var highlightTile = BABYLON.MeshBuilder.CreateGround("highlightTile", {width: tileWidth, height: tileHeight, subdivsions: 1}, scene);
+  var highlightMaterial = new BABYLON.StandardMaterial("highlight", scene);
+  highlightMaterial.emissiveColor = new BABYLON.Color3.White();
+  highlightMaterial.alpha = 0.2;
+  highlightTile.material = highlightMaterial;
+  highlightTile.position.x = objCoordX;
+  highlightTile.position.z = objCoordZ;
+  highlightTile.position.y = 0.1; // slightly above ground
+  highlightTile.isPickable = true; 
+
+  return highlightTile;
 }

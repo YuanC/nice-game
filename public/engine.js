@@ -148,7 +148,7 @@ var createScene = function () {
 
   // Need to determine coords first, all params necessary
   refreshMapObjects();
-
+  // spawnAnimal(scene, mapTemplate, numTilesWidth, numTilesHeight);
   // Create cooldown for player actions
   var start = new Date();
   var highlightTile = null;
@@ -167,8 +167,8 @@ var createScene = function () {
       z = pickResult.pickedPoint.z;
       console.log("World coords: (" + x + ", " + z + ")");
       // Begin converting to game grid
-      var gameGridX = getGameGridX(x, widthIsOdd, tileWidth, subdivisions);
-      var gameGridZ = getGameGridZ(z, heightIsOdd, tileHeight, subdivisions);
+      var gameGridX = getGameGridX(x);
+      var gameGridZ = getGameGridZ(z);
       
       console.log("Mapped game grid to array coords: (" + gameGridX + ", " + gameGridZ + ")");
 
@@ -177,23 +177,6 @@ var createScene = function () {
         console.log("Player selected this tile: " + currentType);    
         if(currentType === 'ground') {
           // Highlight picked tile
-          function createHighlightTile(gameGridX, gameGridZ, scene) {
-            var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
-            var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);
-
-            var highlightTile = BABYLON.MeshBuilder.CreateGround("highlightTile", {width: tileWidth, height: tileHeight, subdivsions: 1}, scene);
-            var highlightMaterial = new BABYLON.StandardMaterial("highlight", scene);
-            highlightMaterial.emissiveColor = new BABYLON.Color3.White();
-            highlightMaterial.alpha = 0.2;
-            highlightTile.material = highlightMaterial;
-            highlightTile.position.x = objCoordX;
-            highlightTile.position.z = objCoordZ;
-            highlightTile.position.y = 0.1; // slightly above ground
-            highlightTile.isPickable = true; 
-
-            return highlightTile;
-          }
-
           if(highlightTile !== null) {
             highlightTile.dispose();
             highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
