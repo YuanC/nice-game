@@ -253,7 +253,6 @@ function createTree(gameGridX, gameGridZ, size, scene) {
   var treeMaterial = new BABYLON.StandardMaterial("tree", scene);
   treeMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/tree.png", scene);
   treeMaterial.diffuseTexture.hasAlpha = true;
-  treeMaterial.emissiveColor = BABYLON.Color3.White();
   plane.material = treeMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
@@ -272,14 +271,15 @@ function createTree(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    plane.material.emissiveColor = BABYLON.Color3.Black();
+    plane.material.emissiveColor = BABYLON.Color3.White();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    plane.material.emissiveColor = BABYLON.Color3.White();
+    // Get rid of color
+    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -291,7 +291,6 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
   var flowerMaterial = new BABYLON.StandardMaterial("flower", scene);
   flowerMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/flower.png", scene);
   flowerMaterial.diffuseTexture.hasAlpha = true;
-  flowerMaterial.emissiveColor = BABYLON.Color3.White();
   plane.material = flowerMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
@@ -317,7 +316,7 @@ function createFlower(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 
@@ -329,7 +328,6 @@ function createShrub(gameGridX, gameGridZ, size, scene) {
   var shrubMaterial = new BABYLON.StandardMaterial("shrub", scene);
   shrubMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
   shrubMaterial.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-  shrubMaterial.emissiveColor = BABYLON.Color3.White();
   plane.material = shrubMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
@@ -348,14 +346,14 @@ function createShrub(gameGridX, gameGridZ, size, scene) {
   
   //ON MOUSE ENTER
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
-    plane.material.emissiveColor = BABYLON.Color3.Black();
+    plane.material.emissiveColor = BABYLON.Color3.White();
     progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
     plane.progressBar = progressBar;
   }));
   
   //ON MOUSE EXIT
   plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-    plane.material.emissiveColor = BABYLON.Color3.White();
+    plane.material.emissiveColor = new BABYLON.Color3(0,0,0);
     plane.progressBar.dispose();
   }));
 

@@ -49,9 +49,15 @@ var createScene = function () {
   camera.attachControl(canvas, true);
 
   // Add a light
-  light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-
-  
+  var lights = [];
+  light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 0.5, 1), scene);
+  light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, 0.5, -1), scene);
+  lights.push(light1);
+  lights.push(light2);
+  for(var i = 0; i < lights.length; i++) {
+    lights[i].specular = new BABYLON.Color3(0,0,0);
+    lights[i].intensity = 1;
+  }
 
   // Map size parameters: length and width must be pos. integers
   // Unrelated to number of tiles on map
@@ -86,11 +92,9 @@ var createScene = function () {
   // Create the multi material, set textures
   var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
   groundMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/ground.png", scene);
-  groundMaterial.diffuseTexture.hasAlpha = true;
   // 
   var waterMaterial = new BABYLON.StandardMaterial("water", scene);
   waterMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/water.png", scene);
-  waterMaterial.diffuseTexture.hasAlpha = true;
   // 
   var errorMaterial = new BABYLON.StandardMaterial("error", scene);
   errorMaterial.diffuseColor = new BABYLON.Color3(220, 220, 220);
@@ -134,7 +138,7 @@ var createScene = function () {
 
   // Need to determine coords first, all params necessary
   refreshMapObjects();
-  
+
   // Create cooldown for player actions
   var start = new Date();
 
@@ -162,6 +166,11 @@ var createScene = function () {
         var currentType = mapTemplate[gameGridZ][gameGridX].type;
         console.log("Player selected this tile: " + currentType);    
         if(currentType === 'ground') {
+          // Highlight picked tile
+          var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
+          var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);
+
+
           var currentPlant =  mapTemplate[gameGridZ][gameGridX].plant;
           if(currentPlant !== null) {
             console.log("This plant is here: " + currentPlant.type);
