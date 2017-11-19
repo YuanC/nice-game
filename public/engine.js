@@ -31,12 +31,7 @@ var plantButton, waterButton;
 var plantPanel;
 var treeButton, flowerButton, shrubButton;
 
-var plantMaterials = {
-  'sproutMaterial': null,
-  'treeMaterial': null,
-  'flowerMaterial': null,
-  'shrubMaterial': null
-};
+var plantTextures = {};
 
 /*
 Please refer to engine_helpers.js for necessary function calls
@@ -102,7 +97,7 @@ var createScene = function () {
       'w' : numTilesWidth  // corresponds to x axis
   };
 
-  initPlantMaterials();
+  initPlantTextures();
 
   // Create the Tiled Ground
   var tiledGround = new BABYLON.Mesh.CreateTiledGround("Tiled Ground", xmin, zmin, xmax, zmax, subdivisions, precision, scene);
