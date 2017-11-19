@@ -88,9 +88,9 @@ function refreshMapObjects() {
             treeMatrix[row][col].dispose();
           }
           
-          var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
-          var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
-          treeMatrix[row][col] = createTree(objCoordX, objCoordZ, treeSize, scene);
+          // var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
+          // var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
+          treeMatrix[row][col] = createTree(col, row, treeSize, scene);
 
         } else if (treeMatrix[row][col]) { // delete plant
           treeMatrix[row][col].dispose();
@@ -117,9 +117,9 @@ function refreshMapTile (pos, tile) {
         treeMatrix[row][col].dispose();
       }
       
-      var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
-      var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
-      treeMatrix[row][col] = createTree(objCoordX, objCoordZ, treeSize, scene);
+      // var objCoordX = getObjCoordX(widthIsOdd, col, tileWidth, numTilesWidth);
+      // var objCoordZ = getObjCoordZ(heightIsOdd, row, tileHeight, numTilesHeight);
+      treeMatrix[row][col] = createTree(col, row, treeSize, scene);
 
     } else if (treeMatrix[row][col]) { // delete plant
       treeMatrix[row][col].dispose();
@@ -224,7 +224,7 @@ function getGameGridZ(z, heightIsOdd, tileHeight, subdivisions) {
   return Math.abs(gameGridZ);
 }
 
-function createTree(x, z, size, scene) {
+function createTree(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
   var treeMaterial = new BABYLON.StandardMaterial("tree", scene);
   treeMaterial.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.4);
@@ -232,10 +232,66 @@ function createTree(x, z, size, scene) {
   treeMaterial.emissiveColor = BABYLON.Color3.Green();
   plane.material = treeMaterial;
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-  console.log("New object game coord: (" + x + ", " + z + ")");                            
-  plane.position.x = x;
-  plane.position.z = z;
+  // console.log("New object game coord: (" + gameGridX + ", " + gameGridZ + ")");    
+  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
+  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                        
+  plane.position.x = objCoordX;
+  plane.position.z = objCoordZ;
   plane.position.y = size / 2;
 
+  plane.isPickable = true; 
+
+  plane.actionManager = new BABYLON.ActionManager(scene);
+  
+  var progressBar;
+  //ON MOUSE ENTER
+  plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){ 
+    plane.material.emissiveColor = BABYLON.Color3.Blue();
+    progressBar = showProgress(gameGridX, gameGridZ, treeSize, scene);
+  }));
+  
+  //ON MOUSE EXIT
+  plane.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
+    plane.material.emissiveColor = BABYLON.Color3.Green();
+    progressBar.dispose();
+  }));
+
   return plane;
+}
+
+function showProgress(gameGridX, gameGridZ, size, scene) {
+  // Create plane object
+  var progressBar = BABYLON.Mesh.CreatePlane("", size, scene);
+
+  // Create texture for text
+  var progressTexture = new BABYLON.DynamicTexture("progressTexture", 256, scene, true);
+
+  // Create material for plane
+  var progressMaterial = new BABYLON.StandardMaterial("progressMaterial", scene);
+  progressMaterial.opacityTexture = progressTexture;
+  progressMaterial.diffuseTexture = progressTexture;
+  progressBar.material = progressMaterial;
+
+  // Set billboard
+  progressBar.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+
+  // Set coordinates
+  var objCoordX = getObjCoordX(widthIsOdd, gameGridX, tileWidth, numTilesWidth);
+  var objCoordZ = getObjCoordZ(heightIsOdd, gameGridZ, tileHeight, numTilesHeight);                       
+  progressBar.position.x = objCoordX;
+  progressBar.position.z = objCoordZ;
+  progressBar.position.y = size * 1.5;
+
+  // Display text
+  var font = "bold 70px Segoe UI";
+  var invertY = true;
+  var progress = mapTemplate[gameGridZ][gameGridX].plant.progress;
+  var text = progress + '%';
+  var color = "white"
+  var x = 50;
+  var y = 100;
+  
+  progressTexture.drawText(text, x, y, font, color, "transparent");
+
+  return progressBar;
 }
