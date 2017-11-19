@@ -32,8 +32,83 @@ function spawnAnimal(scene, mapTemplate) {
 			animalCount++;
 		}
 	}
+	//initial position
 	animal.position = new BABYLON.Vector3(getObjCoordX(getGameGridX(xCoord)), 0, getObjCoordZ(getGameGridZ(zCoord)));
-	console.log("placed at ", getObjCoordX(getGameGridX(xCoord)), getObjCoordZ(getGameGridZ(zCoord)));
+	
+	var currentX = animal.position.x;
+
+	var currentZ = animal.position.z;
+
+	let direction = 1;
+	
+	var i = 0;
+	var count = Math.floor((Math.random() * (200-100)) + 100);
+
+	scene.registerAfterRender(function(){
+
+    	if(direction === 1){
+    		animal.locallyTranslate(new BABYLON.Vector3(Math.random() * 0.02, 0, Math.random()* 0.02));
+ 		}
+ 		if(direction === 2){
+    		animal.locallyTranslate(new BABYLON.Vector3(Math.random() * 0.02, 0, Math.random()* -0.02));
+
+ 		}
+ 		if(direction === 3){
+    		animal.locallyTranslate(new BABYLON.Vector3(Math.random() * -0.02, 0, Math.random()* -0.02));
+
+ 		}
+ 		if(direction === 4){
+    		animal.locallyTranslate(new BABYLON.Vector3(Math.random() * -0.02, 0, Math.random()* 0.02));
+
+ 		}
+ 		currentX = animal.position.x;
+		currentZ = animal.position.z;
+		i++;
+ 		if(mapTemplate[getGameGridZ(currentZ)][getGameGridX(currentX + 1)].type === 'water' || 
+ 			mapTemplate[getGameGridZ(currentZ)][getGameGridX(currentX - 1)].type === 'water'|| 
+ 			mapTemplate[getGameGridZ(currentZ + 1)][getGameGridX(currentX)].type === 'water' || 
+ 			mapTemplate[getGameGridZ(currentZ - 1)][getGameGridX(currentX)].type === 'water') {
+ 			direction = (direction + 2) % 4;
+ 			if(direction === 0){
+ 				direction = 4;
+ 			}
+ 			for(var j = 0; j < 50; j++){
+ 				if(direction === 1){
+    				animal.locallyTranslate(new BABYLON.Vector3(Math.random() * 0.008, 0, Math.random()* 0.008));
+ 				}
+ 				if(direction === 2){
+    				animal.locallyTranslate(new BABYLON.Vector3(Math.random() * 0.008, 0, Math.random()* -0.008));
+
+ 				}
+ 				if(direction === 3){
+    				animal.locallyTranslate(new BABYLON.Vector3(Math.random() * -0.008, 0, Math.random()* -0.008));
+
+ 				}
+ 				if(direction === 4){
+    				animal.locallyTranslate(new BABYLON.Vector3(Math.random() * -0.008, 0, Math.random()* 0.008));
+
+ 				}
+ 			}
+ 			
+
+ 			console.log("look i changed direction lol", direction);
+ 		}
+ 		if(i === count){
+ 			count = Math.floor((Math.random() * (200-100)) + 100);
+ 			i = 0;
+ 			direction = (Math.floor(Math.random() * 4 + 1)) % 4;
+
+ 		}
+   //  	else{
+			// animal.locallyTranslate(new BABYLON.Vector3(Math.random() * 0.02 * -1, 0, Math.random()* 0.02 * -1));
+			// currentX = animal.position.x;
+			// currentZ = animal.position.z;
+   //  	}
+    	
+  	});
+
+	// var animalTile = mapTemplate[animal.position.z][animal.position.x];
+	// console.log(animalTile);
 }
 
 // function createAnimal (mapTemplate, gameGridX, gameGridZ) {
