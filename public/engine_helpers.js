@@ -285,7 +285,7 @@ function initPlantTextures () {
   plantTextures['shrub'].hasAlpha = true;
 
   // plantTextures['sprout'] = new BABYLON.StandardMaterial("sprout", scene);
-  plantTextures['sprout'] = new BABYLON.Texture("./public/textures/bush.png", scene);
+  plantTextures['sprout'] = new BABYLON.Texture("./public/textures/sapling.png", scene);
   plantTextures['sprout'].hasAlpha = true;
 }
 

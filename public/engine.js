@@ -77,8 +77,8 @@ var createScene = function () {
   xmax = width;
   zmax = height;
   precision = {
-      "w" : 1,
-      "h" : 1
+    "w" : 1,
+    "h" : 1
   };
 
   // Get map from server
