@@ -11,7 +11,8 @@ var plantActionCd = 10000; // in milliseconds
 var firstAction = true;
 
 // Victor's variables
-var width, height;
+var width = 15;
+var height = 15;
 var xmin, zmin;
 var xmax, zmax;
 var precision;
@@ -39,8 +40,8 @@ var createScene = function () {
   camera.orthoLeft = -wh_ratio*cam_height;
   camera.orthoRight = wh_ratio*cam_height;
 
-  camera.lowerRadiusLimit = 12;
-  camera.upperRadiusLimit = 12;
+  camera.lowerRadiusLimit = 20;
+  camera.upperRadiusLimit = 20;
   camera.upperBetaLimit = Math.PI / 3;
   camera.lowerBetaLimit = Math.PI / 4;
   
@@ -49,12 +50,11 @@ var createScene = function () {
 
   // Add a light
   light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+
   
 
   // Map size parameters: length and width must be pos. integers
   // Unrelated to number of tiles on map
-  width = 3;
-  height = 3;
   xmin = width * -1;
   zmin = height * -1;
   xmax = width;
