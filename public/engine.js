@@ -29,6 +29,7 @@ var gameGridZ = null;
 var highlightTile = null;
 var start = new Date().getTime();
 var elapsed;
+var fontFamily = "Century Gothic";
 
 // GUI Actions
 var activePlantButton, inactivePlantButton, cooldownPlantButton;
@@ -185,15 +186,15 @@ var createScene = function () {
           if(highlightTile !== null) {
             highlightTile.dispose();
             highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
-            // inactivePlantButton.isVisible = false;
-            // inactiveWaterButton.isVisible = false;
+            inactivePlantButton.isVisible = false;
+            inactiveWaterButton.isVisible = false;
             activePlantButton.isVisible = true;
             activeWaterButton.isVisible = true;
           }
           else {
             highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
-            // inactivePlantButton.isVisible = false;
-            // inactiveWaterButton.isVisible = false;
+            inactivePlantButton.isVisible = false;
+            inactiveWaterButton.isVisible = false;
             activePlantButton.isVisible = true;
             activeWaterButton.isVisible = true;
           }
@@ -203,6 +204,7 @@ var createScene = function () {
             console.log("This plant is here: " + currentPlant.type);
           }
           else {
+            // clearHighlightTile();
             // Can make new plant
             // Need to update server array
             // socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': 'tree'});
@@ -289,6 +291,7 @@ var createScene = function () {
 }
 
 function renderGUI () {
+
   // GUI
   var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
   gui_placename = new BABYLON.GUI.TextBlock();
@@ -296,7 +299,7 @@ function renderGUI () {
   gui_placename.color = "white";
   gui_placename.fontSize = 72;
   gui_placename.paddingLeft = 4;
-  gui_placename.fontFamily = "Arial";
+  gui_placename.fontFamily = fontFamily;
   advancedTexture.addControl(gui_placename);
   gui_placename.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
   gui_placename.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -307,7 +310,7 @@ function renderGUI () {
   gui_weather.fontSize = 26;
   gui_weather.paddingTop = 72;
   gui_weather.paddingLeft = 8;
-  gui_weather.fontFamily = "Arial";
+  gui_weather.fontFamily = fontFamily;
   advancedTexture.addControl(gui_weather);
   gui_weather.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
   gui_weather.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -318,13 +321,19 @@ function renderGUI () {
   gui_usercount.paddingRight = 8;
   gui_usercount.paddingTop = 8;
   gui_usercount.fontSize = 32;
-  gui_usercount.fontFamily = "Arial";
+  gui_usercount.fontFamily = fontFamily;
   advancedTexture.addControl(gui_usercount);
   gui_usercount.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
   gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
-  // Planting 
+  // Logo
+  var logo = new BABYLON.GUI.Image("logo", "public/textures/logo.png");
+  logo.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+  logo.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+  logo.height = "100px";
+  advancedTexture.addControl(logo); 
 
+  // Planting 
   inactivePlantButton = BABYLON.GUI.Button.CreateImageOnlyButton("inactivePlantButton", "public/textures/planting_inactive.png");
   inactivePlantButton.width = "100px";
   inactivePlantButton.height = "110px";
@@ -364,7 +373,7 @@ function renderGUI () {
   activeWaterButton.thickness = 0;
   activeWaterButton.isVisible = false;
   advancedTexture.addControl(activeWaterButton);  
-
+  
   plantPanel = new BABYLON.GUI.StackPanel();    
   advancedTexture.addControl(plantPanel);   
   plantPanel.isVisible = false;
@@ -500,6 +509,9 @@ function startBabylon () {
     engine = new BABYLON.Engine(canvas, true);
 
     engine.displayLoadingUI();
+    engine.loadingUIText = "Bloom is loading...";
+    engine.loadingUIBackgroundColor = "green";
+
     scene = createScene();
 
     scene.executeWhenReady(function () {
