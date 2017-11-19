@@ -70,7 +70,7 @@ function updateMapState (places, socket) {
 const VALUES = {
   dry_change: -10,
   wet_change: 5,
-  water_change: 20
+  water_change: 10
 }
 
 function updateTile (tile, precip) {
@@ -101,7 +101,7 @@ exp.newPlant = (places, placeKey, plant, callback) => {
       console.log(tile)
       tile['plant']  = { 
         'type': plant.type,
-        'progress': 70,
+        'progress': 30,
         'stage': 0
       }
       callback({'pos': plant.pos, 'tile': tile})
