@@ -23,10 +23,10 @@ getter.get("map1.png", (err, pixels) => {
 
     let tile = pixels[i]
 
-    if (tile['r'] == 95) { // water
+    if (tile['r'] == 255) { // water
       map[r].push({'type': 'water'})
 
-    } else if (tile['r'] == 153) { // ground
+    } else if (tile['r'] == 0 && tile['a'] == 255) { // ground
       map[r].push({'type': 'ground', 'plant': null})
       
     } else {
