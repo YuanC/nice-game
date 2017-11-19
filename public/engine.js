@@ -262,6 +262,10 @@ var createScene = function () {
 
   renderRain();
 
+  // Some Camera Effects
+  // var parameters = {  };
+  // var lensEffect = new BABYLON.LensRenderingPipeline('lensEffects', parameters, scene, 1.0, camera);
+
   return scene;
 }
 
@@ -352,13 +356,13 @@ function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
   rainEmitter.position.y = 10;
 
-  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1000, scene);
+  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1500, scene);
 
   rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   rainParticleSystem.emitter = rainEmitter;
 
-  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-10, 0, -10); // Starting all From
-  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(10, 0, 10); // To...
+  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-20, 0, -20); // Starting all From
+  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(20, 0, 20); // To...
 
   rainParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
   rainParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
@@ -367,8 +371,8 @@ function renderRain () {
   rainParticleSystem.minSize = 0.1;
   rainParticleSystem.maxSize = 0.2;
 
-  rainParticleSystem.minLifeTime = 0.2;
-  rainParticleSystem.maxLifeTime = 0.3;
+  rainParticleSystem.minLifeTime = 0.05;
+  rainParticleSystem.maxLifeTime = 0.1;
 
   rainParticleSystem.emitRate = 1500;
 
