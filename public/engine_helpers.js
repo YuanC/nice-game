@@ -325,14 +325,7 @@ function createTree(gameGridX, gameGridZ, size, scene) {
 
 function createFlower(gameGridX, gameGridZ, size, scene) {
   var plane = BABYLON.Mesh.CreatePlane("", size, scene);
-<<<<<<< HEAD
-  var flowerMaterial = new BABYLON.StandardMaterial("flower", scene);
-  flowerMaterial.diffuseTexture = new BABYLON.Texture("./public/textures/flower.png", scene);
-  flowerMaterial.diffuseTexture.hasAlpha = true;
-  plane.material = flowerMaterial;
-=======
   plane.material = new BABYLON.StandardMaterial("flower", scene);
->>>>>>> origin/master
   plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   var objCoordX = getObjCoordX(gameGridX);
   var objCoordZ = getObjCoordZ(gameGridZ);                        
