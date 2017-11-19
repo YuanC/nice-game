@@ -207,7 +207,7 @@ function renderGUI () {
   gui_weather.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
   gui_usercount = new BABYLON.GUI.TextBlock();
-  gui_usercount.text = userCnt + ' user(s) connected';
+  gui_usercount.text = userCnt + ' user(s) on island';
   gui_usercount.color = "white";
   gui_usercount.paddingRight = 8;
   gui_usercount.paddingTop = 8;
