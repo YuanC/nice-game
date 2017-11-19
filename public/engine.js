@@ -4,10 +4,11 @@ var gui, gui_placename, gui_weather, gui_usercount;
 var camera, cam_height = 10, light;
 var treeSize = 1.5;
 var flowerSize = 0.5;
-var shrubSize = 0.5;
+var shrubSize = 0.75;
 var rainParticleSystem, rainMusic;
+var sprinkleEmitter, sprinkleParticles;
 var treeMatrix, mapTemplate;
-var plantActionCd = 10000; // in milliseconds
+var plantActionCd = 5000; // in milliseconds
 var firstAction = true;
 
 // Victor's variables
@@ -25,9 +26,13 @@ var lights;
 var highlighted = false;
 var gameGridX = null;
 var gameGridZ = null;
+var highlightTile = null;
+var start = new Date().getTime();
+var elapsed;
 
 // GUI Actions
-var plantButton, waterButton;
+var activePlantButton, inactivePlantButton, cooldownPlantButton;
+var activeWaterButton, inactiveWaterButton, cooldownWaterButton;
 var plantPanel;
 var treeButton, flowerButton, shrubButton;
 
@@ -152,31 +157,16 @@ var createScene = function () {
   // Need to determine coords first, all params necessary
   refreshMapObjects();
   spawnAnimal(scene, mapTemplate);
-  // Create cooldown for player actions
-  var start = new Date();
-  var highlightTile = null;
-
-  function clearHighlightTile() {
-    if(highlightTile !== null) {
-      highlightTile.dispose();
-      highlighted = false;
-      gameGridX = null;
-      gameGridZ = null;
-      plantButton.isVisible = false;
-      waterButton.isVisible = false;
-    }
-  }
-
+  
   //When pointer down event is raised
   scene.onPointerDown = function (evt, pickResult) {
-    // Get time in ms
-    var elapsed = new Date() - start;
-    console.log("Time passed: " + elapsed);
+    elapsed = new Date().getTime() - start;
+    console.log(elapsed);
+    
     // if the click hits the ground object and cooldown finished
-    // if (pickResult.hit && (firstAction || elapsed >= plantActionCd)) {
-    if (pickResult.hit) {
-      firstAction = false;
-      start = new Date();
+    if (pickResult.hit && (firstAction || elapsed >= plantActionCd)) {
+    // if (pickResult.hit) {
+      
       // z is the depth, which is basically our y
       x = pickResult.pickedPoint.x;
       z = pickResult.pickedPoint.z;
@@ -195,9 +185,17 @@ var createScene = function () {
           if(highlightTile !== null) {
             highlightTile.dispose();
             highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
+            // inactivePlantButton.isVisible = false;
+            // inactiveWaterButton.isVisible = false;
+            activePlantButton.isVisible = true;
+            activeWaterButton.isVisible = true;
           }
           else {
             highlightTile = createHighlightTile(gameGridX, gameGridZ, scene);
+            // inactivePlantButton.isVisible = false;
+            // inactiveWaterButton.isVisible = false;
+            activePlantButton.isVisible = true;
+            activeWaterButton.isVisible = true;
           }
 
           var currentPlant =  mapTemplate[gameGridZ][gameGridX].plant;
@@ -219,6 +217,10 @@ var createScene = function () {
         clearHighlightTile();
       }
     }
+    else if(elapsed < plantActionCd) {
+      inactivePlantButton.isVisible = true;
+      inactiveWaterButton.isVisible = true;
+    }
     else { // nothing hit
       clearHighlightTile();
     }
@@ -227,33 +229,48 @@ var createScene = function () {
   renderGUI();
 
   // Buttons for player actions
-  plantButton.onPointerDownObservable.add(function() {
-    var plantType = null;
-    // Show plant panel
-    plantPanel.isVisible = true;
-    treeButton.onPointerDownObservable.add(function() {
-      plantType = "tree";
-      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
-      plantPanel.isVisible = false;
-    });
-    flowerButton.onPointerDownObservable.add(function() {
-      plantType = "flower";
-      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
-      plantPanel.isVisible = false;
-    });
-    shrubButton.onPointerDownObservable.add(function() {
-      plantType = "shrub";
-      socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
-      plantPanel.isVisible = false;
-    });
+  activePlantButton.onPointerDownObservable.add(function() {
+    elapsed = new Date().getTime() - start;
+    if(highlighted === true && (elapsed >= plantActionCd || firstAction)) {
+      console.log("Active plant button clicked")
+      var plantType = null;
+      // Show plant panel
+      plantPanel.isVisible = true;
+      treeButton.onPointerDownObservable.add(function() {
+        plantType = "tree";
+        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+        plantPanel.isVisible = false;
+        resetActiveButtons();
+        displayCd();
+      });
+      flowerButton.onPointerDownObservable.add(function() {
+        plantType = "flower";
+        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+        plantPanel.isVisible = false;
+        resetActiveButtons();
+        displayCd();
+      });
+      shrubButton.onPointerDownObservable.add(function() {
+        plantType = "shrub";
+        socket.emit('newPlant', {'pos': [gameGridZ, gameGridX], 'type': plantType});
+        plantPanel.isVisible = false;
+        resetActiveButtons();
+        displayCd();
+
+      });
+    }
   });
 
-  waterButton.onPointerDownObservable.add(function() {
-    if(highlighted === true) {
+  activeWaterButton.onPointerDownObservable.add(function() {
+    elapsed = new Date().getTime() - start;
+    if(highlighted === true && (elapsed >= plantActionCd || firstAction)) {
       if(mapTemplate[gameGridZ][gameGridX] !== null) {
         if(mapTemplate[gameGridZ][gameGridX].type === 'ground') {
           if(plantType = mapTemplate[gameGridZ][gameGridX].plant !== null) {
             socket.emit('waterPlant', [gameGridZ, gameGridX]);
+            resetActiveButtons();
+            displayCd();
+            sprinkle(getObjCoordX(gameGridX), getObjCoordZ(gameGridZ));
           }
         }
       }
@@ -261,6 +278,12 @@ var createScene = function () {
   });
 
   renderRain();
+
+  renderSprinkle();
+
+  // Some Camera Effects
+  // var parameters = {  };
+  // var lensEffect = new BABYLON.LensRenderingPipeline('lensEffects', parameters, scene, 1.0, camera);
 
   return scene;
 }
@@ -301,15 +324,46 @@ function renderGUI () {
   gui_usercount.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
   // Planting 
-  plantButton = BABYLON.GUI.Button.CreateImageOnlyButton("plantButton", "public/textures/button_planting.png");
-  plantButton.width = "100px";
-  plantButton.height = "110px";
-  plantButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-  plantButton.left = "-10%";
-  plantButton.paddingBottom = "10px";
-  plantButton.thickness = 0;
-  plantButton.isVisible = false;
-  advancedTexture.addControl(plantButton);  
+
+  inactivePlantButton = BABYLON.GUI.Button.CreateImageOnlyButton("inactivePlantButton", "public/textures/planting_inactive.png");
+  inactivePlantButton.width = "100px";
+  inactivePlantButton.height = "110px";
+  inactivePlantButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  inactivePlantButton.left = "-10%";
+  inactivePlantButton.paddingBottom = "10px";
+  inactivePlantButton.thickness = 0;
+  inactivePlantButton.isVisible = true;
+  advancedTexture.addControl(inactivePlantButton);  
+
+  activePlantButton = BABYLON.GUI.Button.CreateImageOnlyButton("activePlantButton", "public/textures/planting_active.png");
+  activePlantButton.width = "100px";
+  activePlantButton.height = "110px";
+  activePlantButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  activePlantButton.left = "-10%";
+  activePlantButton.paddingBottom = "10px";
+  activePlantButton.thickness = 0;
+  activePlantButton.isVisible = false;
+  advancedTexture.addControl(activePlantButton);  
+
+  inactiveWaterButton = BABYLON.GUI.Button.CreateImageOnlyButton("inactiveWaterButton", "public/textures/watering_inactive.png");
+  inactiveWaterButton.width = "100px";
+  inactiveWaterButton.height = "110px";
+  inactiveWaterButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  inactiveWaterButton.left = "10%";
+  inactiveWaterButton.paddingBottom = "10px";
+  inactiveWaterButton.thickness = 0;
+  inactiveWaterButton.isVisible = true;
+  advancedTexture.addControl(inactiveWaterButton);  
+
+  activeWaterButton = BABYLON.GUI.Button.CreateImageOnlyButton("activeWaterButton", "public/textures/watering_active.png");
+  activeWaterButton.width = "100px";
+  activeWaterButton.height = "110px";
+  activeWaterButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+  activeWaterButton.left = "10%";
+  activeWaterButton.paddingBottom = "10px";
+  activeWaterButton.thickness = 0;
+  activeWaterButton.isVisible = false;
+  advancedTexture.addControl(activeWaterButton);  
 
   plantPanel = new BABYLON.GUI.StackPanel();    
   advancedTexture.addControl(plantPanel);   
@@ -336,15 +390,6 @@ function renderGUI () {
   shrubButton.background = "green";
   plantPanel.addControl(shrubButton); 
 
-  waterButton = BABYLON.GUI.Button.CreateImageOnlyButton("waterButton", "public/textures/button_watering.png");
-  waterButton.width = "100px";
-  waterButton.height = "110px";
-  waterButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-  waterButton.left = "10%";
-  waterButton.paddingBottom = "10px";
-  waterButton.thickness = 0;
-  waterButton.isVisible = false;
-  advancedTexture.addControl(waterButton);  
 }
 
 
@@ -352,13 +397,13 @@ function renderRain () {
   var rainEmitter = BABYLON.Mesh.CreateBox("rainEmitter", 0.01, scene);
   rainEmitter.position.y = 10;
 
-  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1000, scene);
+  rainParticleSystem = new BABYLON.ParticleSystem("rain", 1500, scene);
 
   rainParticleSystem.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
   rainParticleSystem.emitter = rainEmitter;
 
-  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-10, 0, -10); // Starting all From
-  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(10, 0, 10); // To...
+  rainParticleSystem.minEmitBox = new BABYLON.Vector3(-20, 0, -20); // Starting all From
+  rainParticleSystem.maxEmitBox = new BABYLON.Vector3(20, 0, 20); // To...
 
   rainParticleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
   rainParticleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
@@ -367,8 +412,8 @@ function renderRain () {
   rainParticleSystem.minSize = 0.1;
   rainParticleSystem.maxSize = 0.2;
 
-  rainParticleSystem.minLifeTime = 0.2;
-  rainParticleSystem.maxLifeTime = 0.3;
+  rainParticleSystem.minLifeTime = 0.05;
+  rainParticleSystem.maxLifeTime = 0.1;
 
   rainParticleSystem.emitRate = 1500;
 
@@ -384,6 +429,45 @@ function renderRain () {
 
   // Begins updateWeather
   rainMusic = new BABYLON.Sound("RainMusic", "public/sounds/rain.mp3", scene, updateWeather, {'loop': true});
+}
+
+function renderSprinkle () {
+  sprinkleEmitter = BABYLON.Mesh.CreateBox("sprinkleEmitter", 0.01, scene);
+  sprinkleEmitter.position.y = 2;
+  sprinkleParticles = new BABYLON.ParticleSystem("sprinkle", 50, scene);
+
+  sprinkleParticles.particleTexture = new BABYLON.Texture("public/textures/flare.png", scene);
+  sprinkleParticles.emitter = sprinkleEmitter;
+
+  sprinkleParticles.minEmitBox = new BABYLON.Vector3(-0.5, 0, -0.5);
+  sprinkleParticles.maxEmitBox = new BABYLON.Vector3(0.5, 0, 0.5);
+
+  sprinkleParticles.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+  sprinkleParticles.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+  sprinkleParticles.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+  sprinkleParticles.minSize = 0.3;
+  sprinkleParticles.maxSize = 0.5;
+
+  sprinkleParticles.minLifeTime = 0.2;
+  sprinkleParticles.maxLifeTime = 0.3;
+
+  sprinkleParticles.emitRate = 50;
+  sprinkleParticles.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+  sprinkleParticles.gravity = new BABYLON.Vector3(0, -20, 0);
+  sprinkleParticles.direction1 = new BABYLON.Vector3(0, -1, 0);
+  sprinkleParticles.direction2 = new BABYLON.Vector3(0, -1, 0);
+
+}
+
+function sprinkle (x, z) {
+  sprinkleEmitter.position.x = x;
+  sprinkleEmitter.position.z = z;
+
+  sprinkleParticles.start();
+  setTimeout(function () { sprinkleParticles.stop(); }, 1000);
+
 }
 
 function updateWeather () {

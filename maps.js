@@ -95,42 +95,50 @@ function updateTile (tile, precip) {
 
 exp.newPlant = (places, placeKey, plant, callback) => {
 
-  tile = places[placeKey]['map'][plant.pos[0]][plant.pos[1]]
-  if (!tile['plant']) {
-    console.log(tile)
-    tile['plant']  = { 
-      'type': plant.type,
-      'progress': 70,
-      'stage': 0
-    }
-    callback({'pos': plant.pos, 'tile': tile})
-  } 
+  if (plant && plant.pos && plant.pos.length === 2 && plant.type) {
+    tile = places[placeKey]['map'][plant.pos[0]][plant.pos[1]]
+    if (!tile['plant']) {
+      console.log(tile)
+      tile['plant']  = { 
+        'type': plant.type,
+        'progress': 70,
+        'stage': 0
+      }
+      callback({'pos': plant.pos, 'tile': tile})
+    } 
+
+  }
+
   
 }
 
 exp.waterPlant = (places, placeKey, pos, callback) => {
-  let tile = places[placeKey]['map'][pos[0]][pos[1]]
 
-  if (tile['plant']['stage'] < 3) {
+  if (pos && pos.length === 2) {
 
-    tile['plant']['progress'] += VALUES.water_change
+    let tile = places[placeKey]['map'][pos[0]][pos[1]]
 
-    if (tile['plant']['progress'] >= 100) {
+    if (tile['plant']['stage'] < 3) {
 
-      tile['plant']['progress'] = 0
-      tile['plant']['stage'] = tile['plant']['stage'] + 1
+      tile['plant']['progress'] += VALUES.water_change
 
-    } else if (tile['plant']['progress'] < 0) {
+      if (tile['plant']['progress'] >= 100) {
 
-      tile['plant']['progress'] = 90
-      tile['plant']['stage'] = tile['plant']['stage'] - 1
+        tile['plant']['progress'] = 0
+        tile['plant']['stage'] = tile['plant']['stage'] + 1
 
-      if (tile['plant']['stage'] < 0) {
-        tile['plant'] = null
+      } else if (tile['plant']['progress'] < 0) {
+
+        tile['plant']['progress'] = 90
+        tile['plant']['stage'] = tile['plant']['stage'] - 1
+
+        if (tile['plant']['stage'] < 0) {
+          tile['plant'] = null
+        }
       }
-    }
 
-    callback({'pos': pos, 'tile': tile})
+      callback({'pos': pos, 'tile': tile})
+    }
   }
 }
 

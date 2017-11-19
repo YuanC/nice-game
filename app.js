@@ -20,11 +20,11 @@ io.on('connection', (socket) => {
     if (places.hasOwnProperty(location)) {
       socket.location = location
       places[socket.location]['playerCount'] += 1
-      socket.emit('connectSuccess', places[location])
       socket.join(socket.location)
+      socket.emit('connectSuccess', places[socket.location])
       socket.to(socket.location).emit('playerCountChange', places[socket.location]['playerCount'])
 
-      console.log(location + ': ' + places[socket.location]['playerCount'] + ' users')
+      console.log(socket.location + ': ' + places[socket.location]['playerCount'] + ' users')
     } else {
       socket.emit('connectFail')
     }
