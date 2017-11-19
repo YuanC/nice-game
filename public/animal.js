@@ -31,9 +31,6 @@ function spawnAnimal(scene, mapTemplate) {
 			// animal.position = new BABYLON.Vector3(xCoord, 0, zCoord);
 			animalCount++;
 		}
-		else {
-			console.log("Can't spawn here");
-		}
 	}
 	animal.position = new BABYLON.Vector3(getObjCoordX(getGameGridX(xCoord)), 0, getObjCoordZ(getGameGridZ(zCoord)));
 	console.log("placed at ", getObjCoordX(getGameGridX(xCoord)), getObjCoordZ(getGameGridZ(zCoord)));
@@ -50,12 +47,5 @@ function spawnAnimal(scene, mapTemplate) {
 function getRandomCoord () {
 	var randomCoord = new BABYLON.Vector3((Math.floor(Math.random() * 15)), 0, (Math.floor(Math.random() * 15)));
 	return randomCoord;
-}
-
-function walkPath (animal) {
-	var destination = getRandomTile(mapTemplate, numTilesWidth, numTilesHeight);
-	if (animal != null && destination.type === 'ground'){
-
-	}
 }
 
