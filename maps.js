@@ -114,7 +114,7 @@ exp.newPlant = (places, placeKey, plant, callback) => {
 
 exp.waterPlant = (places, placeKey, pos, callback) => {
 
-  if (pos && pos.length === 2) {
+  if (pos && pos.length === 2 && places && placeKey in places && places[placeKey]) {
 
     let tile = places[placeKey]['map'][pos[0]][pos[1]]
 
