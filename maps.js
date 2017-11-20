@@ -70,7 +70,7 @@ function updateMapState (places, socket) {
 const VALUES = {
   dry_change: -10,
   wet_change: 5,
-  water_change: 10
+  water_change: 20
 }
 
 function updateTile (tile, precip) {
