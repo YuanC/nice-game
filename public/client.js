@@ -35,9 +35,10 @@ socket.on('playerCountChange', function (count) {
 })
 
 socket.on('mapRefresh', function (place) { // sync with server state
-  console.log('Sync with server: ');
+  // console.log('Sync with server: ');
   console.log(place);
   mapTemplate = place['map'];
+  data.precip = place['precip'];
 
   updateWeather();
   refreshMapObjects();

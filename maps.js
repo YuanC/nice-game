@@ -7,9 +7,6 @@ let exp = module.exports = { }
 exp.updateWeather = (places, socket) => {
   console.log('\nFetching Weather:')
 
-  // Updates precipitation for each place
-  let placesLength = Object.keys(places).length
-
 	for (let placeKey in places) { 
 	  let xmlhttp = new XMLHttpRequest()
 		xmlhttp.onreadystatechange = () =>  {
@@ -19,52 +16,42 @@ exp.updateWeather = (places, socket) => {
         // get weather data from json and check periods precipitation
         let weatherData = JSON.parse(xmlhttp.responseText);
       	places[placeKey]['precip'] = weatherData.data.periods && (weatherData.data.periods[0]['intensity'] != '0')
-        console.log(placeKey + ' precip: ' + places[placeKey]['precip'])
-        placesLength--
+        updatePlace(placeKey, places, socket)
+
 
 	    } else if (xmlhttp.status == 403 || xmlhttp.status == 404) {
 
         console.log('Could not get data')
         places[placeKey]['precip'] = false
-        console.log(placeKey + ' precip: ' + places[placeKey]['precip'])
-        placesLength--
+        updatePlace(placeKey, places, socket)
 
     	}
-
-      if (placesLength == 0) {
-        updateMapState(places, socket)
-      }
 		}
 		xmlhttp.open("GET", "https://hackathon.pic.pelmorex.com/api/data/ssp?locationcode=" + places[placeKey].weather_api_id, true)
 		xmlhttp.send()
 	}
 }
 
-function updateMapState (places, socket) {
-  console.log('Updating Maps:')
+function updatePlace (placeKey, places, socket) {
 
-  let placesLength = Object.keys(places).length
+  // places[placeKey]['precip'] = !places[placeKey]['precip']
+  
+  let map = places[placeKey]['map']
 
-  for (let placeKey in places) {
+  for (let i = 0; i < map.length; i++) {
+    for (let j = 0; j < map[i].length; j++) {
+      
+      let tile = map[i][j]
 
-    let map = places[placeKey]['map']
-
-    for (let i = 0; i < map.length; i++) {
-      for (let j = 0; j < map[i].length; j++) {
-        
-        let tile = map[i][j]
-
-        if (tile && tile['type'] === 'ground' && tile['plant']){
-          // console.log(tile)
-          updateTile(tile, places[placeKey]['precip'])
-        }
+      if (tile && tile['type'] === 'ground' && tile['plant']){
+        // console.log(tile)
+        updateTile(tile, places[placeKey]['precip'])
       }
     }
-
-    socket.to(placeKey).emit('mapRefresh', places[placeKey])
-    console.log(placeKey + ' updated')
-
   }
+
+  socket.to(placeKey).emit('mapRefresh', places[placeKey])
+  console.log(placeKey + ' updated: ' + places[placeKey]['precip'])
 }
 
 const VALUES = {

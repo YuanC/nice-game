@@ -151,7 +151,7 @@ function chooseLocation (x, z) {
 function getRandomCoord () {
 	var randomWidth = (Math.floor(Math.random() * widthTotalDistance)) - (widthTotalDistance / 2) ;
 	var randomHeight =	(Math.floor(Math.random() * heightTotalDistance)) - (heightTotalDistance / 2);
-	console.log("------ Random width: " + randomWidth + " Random height: " + randomHeight);
+	// console.log("------ Random width: " + randomWidth + " Random height: " + randomHeight);
 	var randomCoord = new BABYLON.Vector3(randomWidth, 0, randomHeight);
 	return randomCoord;
 }

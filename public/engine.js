@@ -291,7 +291,6 @@ var createScene = function () {
 
   bgMusic = new BABYLON.Sound("RainMusic", "public/sounds/bg.mp3", scene, updateWeather, {'loop': true, 'autoplay': true, 'volume': 0.3});
 
-
   // Some Camera Effects
   // var parameters = {  };
   // var lensEffect = new BABYLON.LensRenderingPipeline('lensEffects', parameters, scene, 1.0, camera);
@@ -492,6 +491,8 @@ function sprinkle (x, z) {
 function updateWeather () {
 
   if (data.precip && !raining) { // Raining
+    
+    console.log('change to rain');
 
     scene.clearColor = new BABYLON.Color3(0.2588, 0.5608, 0.9569);
     rainParticleSystem.start();
@@ -499,7 +500,10 @@ function updateWeather () {
     for(var i = 0; i < lights.length; i++) {
       lights[i].diffuse = new BABYLON.Color3(0.7, 0.7, 0.7);
     }
+
   } else if (!data.precip && raining) { // Dry
+
+    console.log('change to dry');
 
     scene.clearColor = new BABYLON.Color3(0.4078, 0.8235, 0.9098);
     rainMusic.stop();

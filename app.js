@@ -72,5 +72,5 @@ function startDataRefreshes() { // initialize function
 
 startDataRefreshes()
 
-http.listen(PORT, () => console.log('Listening on port' + PORT))
+http.listen(PORT, () => console.log('Listening on port ' + PORT))
 
