@@ -1,6 +1,9 @@
 const getter = require("pixel-getter")
 const fs = require("fs")
 
+/*
+  Tool for converting an image into a grid to be used
+*/
 getter.get("map1.png", (err, pixels) => {
 
   if (err) {

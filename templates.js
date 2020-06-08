@@ -8,6 +8,7 @@ let templates = [
 
 ]
 
+// Initializes the grids for each location
 exp.getPlaces = () => {
 
   let places = {
@@ -44,7 +45,3 @@ exp.getPlaces = () => {
 
   return places
 }
-
-
-// map template
-// places templates

@@ -4,6 +4,7 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
 
 let exp = module.exports = { }
 
+// Fetches the water and updates state if necessary
 exp.updateWeather = (places, socket) => {
   console.log('\nFetching Weather:')
 
@@ -32,10 +33,8 @@ exp.updateWeather = (places, socket) => {
 	}
 }
 
+// Updates the current state of the grid
 function updatePlace (placeKey, places, socket) {
-
-  // places[placeKey]['precip'] = !places[placeKey]['precip']
-  
   let map = places[placeKey]['map']
 
   for (let i = 0; i < map.length; i++) {
@@ -43,8 +42,8 @@ function updatePlace (placeKey, places, socket) {
       
       let tile = map[i][j]
 
+      // Increment tile state if there's a plant
       if (tile && tile['type'] === 'ground' && tile['plant']){
-        // console.log(tile)
         updateTile(tile, places[placeKey]['precip'])
       }
     }
@@ -60,11 +59,11 @@ const VALUES = {
   water_change: 20
 }
 
+// Updates the tile state
 function updateTile (tile, precip) {
 
   if (tile['plant']['stage'] < 1) {
     tile['plant']['progress'] += (precip ? VALUES.wet_change : VALUES.dry_change)
-    // console.log(tile['plant']['progress'])
     if (tile['plant']['progress'] >= 100) {
       tile['plant']['progress'] = 0
       tile['plant']['stage'] = tile['plant']['stage'] + 1
@@ -80,6 +79,7 @@ function updateTile (tile, precip) {
   }
 }
 
+// Adds a new plant at specified location
 exp.newPlant = (places, placeKey, plant, callback) => {
 
   if (plant && plant.pos && plant.pos.length === 2 && plant.type
@@ -99,6 +99,7 @@ exp.newPlant = (places, placeKey, plant, callback) => {
   }
 }
 
+// Waters a specified plant
 exp.waterPlant = (places, placeKey, pos, callback) => {
 
   if (pos && pos.length === 2 && places && placeKey in places && places[placeKey]) {
